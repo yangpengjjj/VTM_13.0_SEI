@@ -1119,6 +1119,10 @@ void EncApp::xInitLibCfg()
   m_cEncLib.setNumRefLayers                                       ( m_numRefLayers );
 
   m_cEncLib.setVPSParameters(m_cfgVPSParameters);
+
+  //git test
+
+
 }
 
 void EncApp::xCreateLib( std::list<PelUnitBuf*>& recBufList, const int layerId )
