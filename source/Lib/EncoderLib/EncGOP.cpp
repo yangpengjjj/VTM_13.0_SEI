@@ -546,6 +546,27 @@ void EncGOP::xWriteLeadingSEIOrdered (SEIMessages& seiMessages, SEIMessages& duI
 #endif
   // The case that a specific SEI is not present is handled in xWriteSEI (empty list)
 
+#if SEI_MANIFEST_MSG
+     // When SEI Manifest SEI message is present in an SEI NAL unit, the SEI Manifest SEI message shall be the first SEI message in the SEI NAL unit (D3.45 in ISO/IEC 23008-2).
+  if (m_pcCfg->getSmSeiManifestSeiEnabled())   
+  {
+    currentMessages = extractSeisByType(localMessages, SEI::SEI_MANIFEST);
+    CHECK(!(currentMessages.size() <= 1), "Unspecified error");
+    xWriteSEI(NAL_UNIT_PREFIX_SEI, currentMessages, accessUnit, itNalu, temporalId);
+    xClearSEIs(currentMessages, !testWrite);
+  }
+#endif
+#if SEI_PREFIX_MSG
+   // When SEI Manifest SEI message is present in an SEI NAL unit, the SEI Manifest SEI message shall be the first SEI message in the SEI NAL unit (D3.45 in ISO/IEC 23008-2).
+  if (m_pcCfg->getSpiPrefixIndicationSeiEnabled())   
+  {
+    currentMessages = extractSeisByType(localMessages, SEI::SEI_PREFIX_INDICATION);
+    CHECK(!(currentMessages.size() <= 1), "Unspecified error");
+    xWriteSEI(NAL_UNIT_PREFIX_SEI, currentMessages, accessUnit, itNalu, temporalId);
+    xClearSEIs(currentMessages, !testWrite);
+    
+  }
+#endif  
 
   // Buffering period SEI must always be following active parameter sets
   currentMessages = extractSeisByType(localMessages, SEI::BUFFERING_PERIOD);
@@ -772,6 +793,24 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
     m_seiEncoder.initSEIContentColourVolume(seiContentColourVolume);
     seiMessages.push_back(seiContentColourVolume);
   }
+
+#if SEI_MANIFEST_MSG
+  if (m_pcCfg->getSmSeiManifestSeiEnabled()) 
+  {
+    SEIManifest *seiSEIManifest = new SEIManifest;
+    m_seiEncoder.initSEISeiManifest(seiSEIManifest);
+    seiMessages.push_back(seiSEIManifest);
+  }
+#endif
+#if SEI_PREFIX_MSG
+  if (m_pcCfg->getSpiPrefixIndicationSeiEnabled())
+  {
+    SEIPrefixIndication *seiSEIPrefixIndication = new SEIPrefixIndication;
+    m_seiEncoder.initSEISeiPrefixIndication(seiSEIPrefixIndication);
+    seiMessages.push_back(seiSEIPrefixIndication);
+  }
+#endif
+
 }
 
 void EncGOP::xCreatePerPictureSEIMessages (int picInGOP, SEIMessages& seiMessages, SEIMessages& nestedSeiMessages, Slice *slice)

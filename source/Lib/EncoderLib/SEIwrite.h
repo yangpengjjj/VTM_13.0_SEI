@@ -79,6 +79,12 @@ protected:
   void xWriteSEIContentLightLevelInfo(const SEIContentLightLevelInfo& sei);
   void xWriteSEIAmbientViewingEnvironment(const SEIAmbientViewingEnvironment& sei);
   void xWriteSEIContentColourVolume(const SEIContentColourVolume &sei);
+#if SEI_MANIFEST_MSG
+  void xWriteSEIManifest(const SEIManifest &sei);
+#endif
+#if SEI_PREFIX_MSG
+  void xWriteSEIPrefixIndication(const SEIPrefixIndication &sei);
+#endif  
   void xWriteSEIAnnotatedRegions                  (const SEIAnnotatedRegions& sei);
   void xWriteSEIpayloadData(OutputBitstream &bs, const SEI& sei, HRD &hrd, const uint32_t temporalId);
   void xWriteByteAlign();

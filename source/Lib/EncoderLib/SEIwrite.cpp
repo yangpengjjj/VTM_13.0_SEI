@@ -127,6 +127,16 @@ void SEIWriter::xWriteSEIpayloadData(OutputBitstream &bs, const SEI& sei, HRD &h
   case SEI::SAMPLE_ASPECT_RATIO_INFO:
     xWriteSEISampleAspectRatioInfo(*static_cast<const SEISampleAspectRatioInfo*>(&sei));
     break;
+#if SEI_MANIFEST_MSG
+    case SEI::SEI_MANIFEST : 
+      xWriteSEIManifest(*static_cast<const SEIManifest *>(&sei));
+      break;
+#endif   
+#if SEI_PREFIX_MSG
+    case SEI::SEI_PREFIX_INDICATION : 
+      xWriteSEIPrefixIndication(*static_cast<const SEIPrefixIndication *>(&sei));
+      break;
+#endif  
   case SEI::ANNOTATED_REGIONS:
     xWriteSEIAnnotatedRegions(*static_cast<const SEIAnnotatedRegions*>(&sei));
     break;
@@ -600,6 +610,41 @@ void SEIWriter::xWriteSEIMasteringDisplayColourVolume(const SEIMasteringDisplayC
   WRITE_CODE( sei.values.maxLuminance,     32,  "mdcv_max_display_mastering_luminance" );
   WRITE_CODE( sei.values.minLuminance,     32,  "mdcv_min_display_mastering_luminance" );
 }
+
+#if SEI_MANIFEST_MSG
+void SEIWriter::xWriteSEIManifest(const SEIManifest &sei) 
+{
+  WRITE_CODE(sei.m_manifestNumSeiMsgTypes, 16, "manifest_num_sei_msg_types");
+  for (int i = 0; i < sei.m_manifestNumSeiMsgTypes; i++) 
+  {
+    WRITE_CODE(sei.m_manifestSeiPayloadType[i], 16, "manifest_sei_payload_types");
+    WRITE_CODE(sei.m_manifestSeiDescription[i], 8, "manifest_sei_description"); 
+  }
+}
+#endif   
+
+#if SEI_PREFIX_MSG
+void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei) 
+{
+  WRITE_CODE(sei.m_prefixSeiPayloadType, 16, "prefix_sei_payload_type");
+  WRITE_CODE(sei.m_numSeiPrefixIndicationsMinus1, 8, "num_sei_prefix_indications_minus1");
+  for (int i = 0; i <= sei.m_numSeiPrefixIndicationsMinus1; i++) 
+  {
+    WRITE_CODE(sei.m_numBitsInPrefixIndicationMinus1[i], 16, "num_bits_in_prefix_indication_minus1");
+    for (int j = 0; j <= sei.m_numBitsInPrefixIndicationMinus1[i]; j++) 
+    {
+      WRITE_CODE(sei.m_seiPrefixDataBit[i][j], 1, "sei_prefix_data_bit");     
+    }
+    while (m_pcBitIf->getNumberOfWrittenBits() % 8 != 0)
+    {
+      WRITE_FLAG(1, "byte_alignment_bit_equal_to_one");      
+    }   
+  }
+  
+}
+#endif
+
+
 
 void SEIWriter::xWriteSEIAnnotatedRegions(const SEIAnnotatedRegions &sei)
 {

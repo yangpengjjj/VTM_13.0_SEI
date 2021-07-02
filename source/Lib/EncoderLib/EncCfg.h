@@ -792,6 +792,23 @@ protected:
   int         m_numRefLayers[MAX_VPS_LAYERS];
   bool        m_avoidIntraInDepLayer;
 
+#if SEI_MANIFEST_MSG
+  bool                        m_smSeiManifestSeiEnabled;
+  int                         m_smSeiManifestNumSeiMsgTypes;
+  std::vector<unsigned short> m_smSeiManifestSeiPayloadType;
+  std::vector<unsigned char>  m_smSeiManifestSeiDescription;
+#endif
+#if SEI_PREFIX_MSG
+  bool                                   m_spiSeiPrefixIndicationSeiEnabled;
+  int                                    m_spiSeiPrefixSeiPayloadType;
+  int                                    m_spiSeiNumSeiPrefixIndicationsMinus1;
+  std::vector<unsigned short>            m_spiSeiNumBitsInPrefixIndicationMinus1;
+  std::vector<std::vector<unsigned int>> m_spiSeiSeiPrefixDataBit;
+  int                                    m_spiSeiByteAlignmentBitEqualToOne;
+#endif
+
+
+
 public:
   EncCfg()
   {
@@ -2052,6 +2069,56 @@ public:
 
   const CfgVPSParameters& getVPSParameters() const                                  { return m_cfgVPSParameters; }
   void                    setVPSParameters(const CfgVPSParameters& cfg)             { m_cfgVPSParameters = cfg; }
+
+#if SEI_MANIFEST_MSG
+  void setSmSEIManifestSeiEnabled(bool b) { m_smSeiManifestSeiEnabled = b; }
+  bool getSmSeiManifestSeiEnabled() { return m_smSeiManifestSeiEnabled; }
+  void setSmSEIManifestNumSeiMsgTypes(int manifestNumSeiMsgTypes)
+  {
+    m_smSeiManifestNumSeiMsgTypes = manifestNumSeiMsgTypes;
+  }
+  int  getSmSEIManifestNumSeiMsgTypes() { return m_smSeiManifestNumSeiMsgTypes; }
+  void setSmSEIManifestSeiPayloadType(const std::vector<unsigned short> &manifestSeiPayloadType)
+  {
+    m_smSeiManifestSeiPayloadType = manifestSeiPayloadType;
+  }
+  unsigned short getSmSEIManifestSeiPayloadType(unsigned int idx)const { return m_smSeiManifestSeiPayloadType[idx]; }
+  void           setSmSEIManifestSeiDescription(const std::vector<unsigned char> &manifestSeiDescription)
+  {
+    m_smSeiManifestSeiDescription = manifestSeiDescription;
+  }
+  unsigned char getSmSEIManifestSeiDescription(unsigned int idx)const { return m_smSeiManifestSeiDescription[idx]; }
+#endif
+#if SEI_PREFIX_MSG
+  void setSpiPrefixIndicationSeiEnabled(bool b) { m_spiSeiPrefixIndicationSeiEnabled = b; }
+  bool getSpiPrefixIndicationSeiEnabled() { return m_spiSeiPrefixIndicationSeiEnabled; }
+  void setSpiPrefixSeiPayloadType(int prefixSeiPayloadType) { m_spiSeiPrefixSeiPayloadType = prefixSeiPayloadType; }
+  int  getSpiPrefixSeiPayloadType() { return m_spiSeiPrefixSeiPayloadType; }
+  void setSpiNumSeiPrefixIndicationsMinus1(int numSeiPrefixIndicationsMinus1)
+  {
+    m_spiSeiNumSeiPrefixIndicationsMinus1 = numSeiPrefixIndicationsMinus1;
+  }
+  int  getSpiNumSeiPrefixIndicationsMinus1() { return m_spiSeiNumSeiPrefixIndicationsMinus1; }
+  void setSpiNumBitsInPrefixIndicationMinus1(const std::vector<unsigned short> &numBitsInPrefixIndicationMinus1)
+  {
+    m_spiSeiNumBitsInPrefixIndicationMinus1 = numBitsInPrefixIndicationMinus1;
+  }
+  unsigned short getSpiNumBitsInPrefixIndicationMinus1(unsigned int idx)const
+  {
+    return m_spiSeiNumBitsInPrefixIndicationMinus1[idx];
+  }
+  void setSpiSeiPrefixDataBit(const std::vector<std::vector<unsigned int>> &seiPrefixDataBit)
+  {
+    m_spiSeiSeiPrefixDataBit = seiPrefixDataBit;
+  }
+  unsigned int getSpiSeiPrefixDataBit(unsigned int idx, unsigned int idy)
+  {
+    return m_spiSeiSeiPrefixDataBit[idx][idy];
+  }
+  void setSpiByteAlignmentBitEqualToOne(int i) { m_spiSeiByteAlignmentBitEqualToOne = i; }
+  int  getSpiByteAlignmentBitEqualToOne() { return m_spiSeiByteAlignmentBitEqualToOne; }
+#endif
+
 };
 
 //! \}

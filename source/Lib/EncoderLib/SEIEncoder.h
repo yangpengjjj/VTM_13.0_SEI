@@ -86,6 +86,12 @@ public:
   void initSEIContentLightLevel(SEIContentLightLevelInfo *sei);
   void initSEIAmbientViewingEnvironment(SEIAmbientViewingEnvironment *sei);
   void initSEIContentColourVolume(SEIContentColourVolume *sei);
+#if SEI_MANIFEST_MSG
+  void initSEISeiManifest(SEIManifest *seiSeiManifest);
+#endif
+#if SEI_PREFIX_MSG
+  void initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications);
+#endif   
   bool initSEIAnnotatedRegions(SEIAnnotatedRegions *sei, int currPOC);
   void readAnnotatedRegionSEI(std::istream &fic, SEIAnnotatedRegions *seiAnnoRegion, bool &failed);
 private:

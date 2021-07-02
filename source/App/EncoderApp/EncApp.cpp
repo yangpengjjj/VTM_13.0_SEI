@@ -1120,7 +1120,25 @@ void EncApp::xInitLibCfg()
 
   m_cEncLib.setVPSParameters(m_cfgVPSParameters);
 
-  //git test
+
+#if SEI_MANIFEST_MSG
+  /************************** SEI MANIFEST SEI MESSAGES **************************/
+  m_cEncLib.setSmSEIManifestSeiEnabled(m_smSeiManifestSeiEnabled);
+  m_cEncLib.setSmSEIManifestNumSeiMsgTypes(m_smSeiManifestNumSeiMsgTypes);
+  m_cEncLib.setSmSEIManifestSeiPayloadType(m_smSeiManifestSeiPayloadType);
+  m_cEncLib.setSmSEIManifestSeiDescription(m_smSeiManifestSeiDescription);
+#endif
+
+#if SEI_PREFIX_MSG
+  /************************** SEI PREFIX INDICATIONS SEI MESSAGES **************************/
+  m_cEncLib.setSpiPrefixIndicationSeiEnabled(m_spiSeiPrefixIndicationSeiEnabled);
+  m_cEncLib.setSpiPrefixSeiPayloadType(m_spiSeiPrefixSeiPayloadType);
+  m_cEncLib.setSpiNumSeiPrefixIndicationsMinus1(m_spiSeiNumSeiPrefixIndicationsMinus1);
+  m_cEncLib.setSpiNumBitsInPrefixIndicationMinus1(m_spiSeiNumBitsInPrefixIndicationMinus1);
+  m_cEncLib.setSpiSeiPrefixDataBit(m_spiSeiSeiPrefixDataBit);
+  m_cEncLib.setSpiByteAlignmentBitEqualToOne(m_spiSeiByteAlignmentBitEqualToOne);
+#endif
+
 
 
 }

@@ -181,6 +181,12 @@ const char *SEI::getSEIMessageString(SEI::PayloadType payloadType)
     case SEI::SAMPLE_ASPECT_RATIO_INFO:             return "Sample aspect ratio information";
     case SEI::SUBPICTURE_LEVEL_INFO:                return "Subpicture level information";
     case SEI::ANNOTATED_REGIONS:                    return "Annotated Region";
+#if SEI_MANIFEST_MSG
+    case SEI::SEI_MANIFEST: return "Sei manifest";
+#endif
+#if SEI_PREFIX_MSG
+    case SEI::SEI_PREFIX_INDICATION: return "Sei prefix indication";
+#endif   
     default:                                        return "Unknown";
   }
 }

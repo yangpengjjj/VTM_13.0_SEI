@@ -79,7 +79,14 @@ public:
     ALTERNATIVE_TRANSFER_CHARACTERISTICS = 147,
     AMBIENT_VIEWING_ENVIRONMENT          = 148,
     CONTENT_COLOUR_VOLUME                = 149,
-    ANNOTATED_REGIONS                    = 202,
+
+#if SEI_MANIFEST_MSG
+    SEI_MANIFEST = 200,
+#endif   
+#if SEI_PREFIX_MSG
+    SEI_PREFIX_INDICATION = 201,
+#endif   
+    ANNOTATED_REGIONS = 202,
   };
 
   SEI() {}
@@ -729,6 +736,46 @@ public:
   std::vector<std::pair<AnnotatedRegionObjectIndex, AnnotatedRegionObject> > m_annotatedRegions;
   std::vector<std::pair<AnnotatedRegionLabelIndex,  AnnotatedRegionLabel>  > m_annotatedLabels;
 };
+
+#if SEI_MANIFEST_MSG
+class SEIManifest : public SEI
+{
+public:
+  PayloadType payloadType() const { return SEI_MANIFEST; }
+
+  SEIManifest() {}
+  virtual ~SEIManifest() {}
+
+  unsigned short m_manifestNumSeiMsgTypes;
+  std::vector<unsigned short> m_manifestSeiPayloadType;
+  std::vector<unsigned char>  m_manifestSeiDescription;
+};
+
+#endif
+
+#if SEI_PREFIX_MSG
+class SEIPrefixIndication : public SEI
+{
+public:
+  PayloadType payloadType() const { return SEI_PREFIX_INDICATION; }
+
+  SEIPrefixIndication() {}
+  virtual ~SEIPrefixIndication() {}
+
+  unsigned short m_prefixSeiPayloadType;
+  unsigned char m_numSeiPrefixIndicationsMinus1;
+  std::vector<unsigned short> m_numBitsInPrefixIndicationMinus1;
+  std::vector<std::vector<int>> m_seiPrefixDataBit;
+  int m_byteAlignmentBitEqualToOne;
+};
+#endif  
+
+
+
+
+
+
+
 //! \}
 
 

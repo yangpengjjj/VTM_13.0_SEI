@@ -873,5 +873,49 @@ void SEIEncoder::initSEISubpictureLevelInfo(SEISubpicureLevelInfo *sei, const SP
   }
 }
 
+#if SEI_MANIFEST_MSG
+void SEIEncoder::initSEISeiManifest(SEIManifest *seiSeiManifest) 
+{
+  assert(m_isInitialized);
+  assert(seiSeiManifest != NULL);
+  seiSeiManifest->m_manifestNumSeiMsgTypes = m_pcCfg->getSmSEIManifestNumSeiMsgTypes();
+  seiSeiManifest->m_manifestSeiPayloadType.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
+  seiSeiManifest->m_manifestSeiDescription.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
+  for (int i = 0; i < seiSeiManifest->m_manifestNumSeiMsgTypes; i++) 
+  {
+    seiSeiManifest->m_manifestSeiPayloadType[i] = m_pcCfg->getSmSEIManifestSeiPayloadType(i);
+    seiSeiManifest->m_manifestSeiDescription[i] = m_pcCfg->getSmSEIManifestSeiDescription(i);
+
+  }
+}
+#endif
+
+#if SEI_PREFIX_MSG
+void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications) 
+{
+  assert(m_isInitialized);
+  assert(seiSeiPrefixIndications != NULL);
+  seiSeiPrefixIndications->m_prefixSeiPayloadType          = m_pcCfg->getSpiPrefixSeiPayloadType();
+  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = m_pcCfg->getSpiNumSeiPrefixIndicationsMinus1();
+  seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1.resize(
+    seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 + 1);
+  seiSeiPrefixIndications->m_seiPrefixDataBit.resize(seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 + 1);
+  for (int i = 0; i <= seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1; i++) 
+  {
+    seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i] = m_pcCfg->getSpiNumBitsInPrefixIndicationMinus1(i);
+    seiSeiPrefixIndications->m_seiPrefixDataBit[i].resize(seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i]
+                                                           + 1);
+    for (int j = 0; j <= seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i]; j++) 
+    {
+      seiSeiPrefixIndications->m_seiPrefixDataBit[i][j] = m_pcCfg->getSpiSeiPrefixDataBit(i, j);
+      
+    }
+    seiSeiPrefixIndications->m_byteAlignmentBitEqualToOne = m_pcCfg->getSpiByteAlignmentBitEqualToOne();
+    
+  }
+  
+}
+#endif   
+
 
 //! \}

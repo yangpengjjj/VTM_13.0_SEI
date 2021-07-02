@@ -788,6 +788,22 @@ protected:
   bool        m_calculateHdrMetrics;
 #endif
 
+#if SEI_MANIFEST_MSG
+  bool                        m_smSeiManifestSeiEnabled;
+  int                         m_smSeiManifestNumSeiMsgTypes;
+  std::vector<unsigned short> m_smSeiManifestSeiPayloadType;
+  std::vector<unsigned char>  m_smSeiManifestSeiDescription;
+#endif
+#if SEI_PREFIX_MSG
+  bool                                   m_spiSeiPrefixIndicationSeiEnabled;
+  int                                    m_spiSeiPrefixSeiPayloadType;
+  int                                    m_spiSeiNumSeiPrefixIndicationsMinus1;
+  std::vector<unsigned short>            m_spiSeiNumBitsInPrefixIndicationMinus1;
+  std::vector<std::vector<unsigned int>> m_spiSeiSeiPrefixDataBit;
+  int                                    m_spiSeiByteAlignmentBitEqualToOne;
+#endif   
+
+
   // internal member functions
   bool  xCheckParameter ();                                   ///< check validity of configuration values
   void  xPrintParameter ();                                   ///< print configuration values
