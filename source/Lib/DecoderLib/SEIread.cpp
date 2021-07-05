@@ -149,17 +149,18 @@ void SEIReader::xReadSEImessage(SEIMessages& seis, const NalUnitType nalUnitType
   int payloadType = 0;
   uint32_t val = 0;
 
+  //都是读到0xff截止，连续读取8bit，从而支持任意长度的payload添加
   do
   {
     sei_read_code(NULL, 8, val, "payload_type");
-    payloadType += val;
+    payloadType += val; //读取payloadType
   } while (val==0xFF);
 
   uint32_t payloadSize = 0;
   do
   {
     sei_read_code(NULL, 8, val, "payload_size");
-    payloadSize += val;
+    payloadSize += val; //读取payloadSize
   } while (val==0xFF);
 
 #if ENABLE_TRACING
@@ -1795,8 +1796,7 @@ void SeiCfgFileDump::xDumpSEIGeneralizedCubemapProjection  (SEIGeneralizedCubema
 #endif
 
 #if SEI_MANIFEST_MSG
- void
-  SEIReader::xParseSEISeiManifest(SEIManifest &sei, unsigned int payloadSize, std::ostream *pDecodedMessageOutputStream)
+ void SEIReader::xParseSEISeiManifest(SEIManifest &sei, unsigned int payloadSize, std::ostream *pDecodedMessageOutputStream)
 {
   output_sei_message_header(sei, pDecodedMessageOutputStream, payloadSize);
   unsigned int val;
@@ -1818,10 +1818,7 @@ void SeiCfgFileDump::xDumpSEIGeneralizedCubemapProjection  (SEIGeneralizedCubema
 #endif
 
 #if SEI_PREFIX_MSG
- void
-  SEIReader::xParseSEISeiPrefixIndication(SEIPrefixIndication &sei, unsigned int payloadSize,
-                                          std::ostream *pDecodedMessageOutputStream)
-  
+ void SEIReader::xParseSEISeiPrefixIndication(SEIPrefixIndication &sei, unsigned int payloadSize, std::ostream *pDecodedMessageOutputStream)
 {
   output_sei_message_header(sei, pDecodedMessageOutputStream, payloadSize);
   unsigned int val;

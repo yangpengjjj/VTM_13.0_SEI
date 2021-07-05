@@ -114,8 +114,8 @@ typedef std::pair<int, int>  TrCost;
 #endif
 
 #if PJ_SEI_MSG
-#define SEI_MANIFEST_MSG                                      1
-#define SEI_PREFIX_MSG                                        1
+#define SEI_MANIFEST_MSG                                  1
+#define SEI_PREFIX_MSG                                    1
 #endif
 
 #define JVET_O0756_CONFIG_HDRMETRICS                      1

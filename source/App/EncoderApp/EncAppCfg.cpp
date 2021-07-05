@@ -690,7 +690,7 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
 
 #if SEI_MANIFEST_MSG
   SMultiValueInput<unsigned int> cfg_smSeiManifestSeiPayloadType(0, std::numeric_limits<unsigned short>::max(), 0,
-                                                                  std::numeric_limits<unsigned short>::max());
+                                                                 std::numeric_limits<unsigned short>::max());
   SMultiValueInput<unsigned int> cfg_smSeiManifestSeiDescription(0, 3, 0, std::numeric_limits<unsigned char>::max());
 #endif
 #if SEI_PREFIX_MSG
