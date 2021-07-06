@@ -127,16 +127,17 @@ void SEIWriter::xWriteSEIpayloadData(OutputBitstream &bs, const SEI& sei, HRD &h
   case SEI::SAMPLE_ASPECT_RATIO_INFO:
     xWriteSEISampleAspectRatioInfo(*static_cast<const SEISampleAspectRatioInfo*>(&sei));
     break;
-#if SEI_MANIFEST_MSG
+#if SEI_MANIFEST_APP1 || SEI_APP3
     case SEI::SEI_MANIFEST : 
       xWriteSEIManifest(*static_cast<const SEIManifest *>(&sei));
       break;
 #endif   
-#if SEI_PREFIX_MSG
+#if SEI_PREFIX_APP1 || SEI_APP3
     case SEI::SEI_PREFIX_INDICATION : 
       xWriteSEIPrefixIndication(*static_cast<const SEIPrefixIndication *>(&sei));
       break;
-#endif  
+#endif
+
   case SEI::ANNOTATED_REGIONS:
     xWriteSEIAnnotatedRegions(*static_cast<const SEIAnnotatedRegions*>(&sei));
     break;
@@ -611,7 +612,7 @@ void SEIWriter::xWriteSEIMasteringDisplayColourVolume(const SEIMasteringDisplayC
   WRITE_CODE( sei.values.minLuminance,     32,  "mdcv_min_display_mastering_luminance" );
 }
 
-#if SEI_MANIFEST_MSG
+#if SEI_MANIFEST_APP1
 void SEIWriter::xWriteSEIManifest(const SEIManifest &sei) 
 {
   WRITE_CODE(sei.m_manifestNumSeiMsgTypes, 16, "manifest_num_sei_msg_types");
@@ -623,7 +624,7 @@ void SEIWriter::xWriteSEIManifest(const SEIManifest &sei)
 }
 #endif   
 
-#if SEI_PREFIX_MSG
+#if SEI_PREFIX_APP1
 void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei) 
 {
   WRITE_CODE(sei.m_prefixSeiPayloadType, 16, "prefix_sei_payload_type");
@@ -637,11 +638,48 @@ void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei)
     }
     while (m_pcBitIf->getNumberOfWrittenBits() % 8 != 0)
     {
-      WRITE_FLAG(1, "byte_alignment_bit_equal_to_one");      
+      WRITE_FLAG(1, "byte_alignment_bit_equal_to_one");     
     }   
   }
-  
 }
+#endif
+
+#if SEI_APP3
+void SEIWriter::xWriteSEIManifest(const SEIManifest &sei)
+{
+  WRITE_CODE(sei.m_manifestNumSeiMsgTypes, 16, "manifest_num_sei_msg_types");
+  for (int i = 0; i < sei.m_manifestNumSeiMsgTypes; i++)
+  {
+    WRITE_CODE(sei.m_manifestSeiPayloadType[i], 16, "manifest_sei_payload_types");
+    WRITE_CODE(sei.m_manifestSeiDescription[i], 8, "manifest_sei_description");
+  }
+  for (int i = 0; i < sei.m_manifestNumSeiMsgTypes; i++)
+  {
+    WRITE_CODE(sei.m_numSeiPrefixIndications[i], 8, "num_sei_prefix_indications");
+    for (int j = 0; j < sei.m_numSeiPrefixIndications[i]; j++)
+    {
+      WRITE_CODE(sei.m_numBitsInPrefixIndication[i][j], 16, "num_bits_in_prefix_indication");
+      for (int k = 0; k < sei.m_numBitsInPrefixIndication[i][j]; k++)
+      {
+        WRITE_CODE(sei.m_seiPrefixDataBit[i][j][k], 1, "sei_prefix_databit");
+      }
+      while (m_pcBitIf->getNumberOfWrittenBits() % 8 != 0)
+      {
+        WRITE_FLAG(1, "byte_alignment_bit_equal_to_one");
+      }
+    }
+  }
+}
+void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei)
+{
+  WRITE_CODE(sei.m_prefixSeiPayloadType, 16, "prefix_sei_payload_type");
+  WRITE_CODE(sei.m_numBitsInPrefixIndicationMinus1, 16, "num_bits_in_prefix_indication_minus1");
+  for (int i = 0; i <= sei.m_numBitsInPrefixIndicationMinus1; i++)
+  {
+    WRITE_CODE(sei.m_seiPrefixDataBit[i], 1, "sei_prefix_databit");
+  }
+}
+
 #endif
 
 

@@ -1121,7 +1121,7 @@ void EncApp::xInitLibCfg()
   m_cEncLib.setVPSParameters(m_cfgVPSParameters);
 
 
-#if SEI_MANIFEST_MSG
+#if SEI_MANIFEST_APP1
   /************************** SEI MANIFEST SEI MESSAGES **************************/
   m_cEncLib.setSmSEIManifestSeiEnabled(m_smSeiManifestSeiEnabled);
   m_cEncLib.setSmSEIManifestNumSeiMsgTypes(m_smSeiManifestNumSeiMsgTypes);
@@ -1129,7 +1129,7 @@ void EncApp::xInitLibCfg()
   m_cEncLib.setSmSEIManifestSeiDescription(m_smSeiManifestSeiDescription);
 #endif
 
-#if SEI_PREFIX_MSG
+#if SEI_PREFIX_APP1
   /************************** SEI PREFIX INDICATIONS SEI MESSAGES **************************/
   m_cEncLib.setSpiPrefixIndicationSeiEnabled(m_spiSeiPrefixIndicationSeiEnabled);
   m_cEncLib.setSpiPrefixSeiPayloadType(m_spiSeiPrefixSeiPayloadType);
@@ -1137,6 +1137,26 @@ void EncApp::xInitLibCfg()
   m_cEncLib.setSpiNumBitsInPrefixIndicationMinus1(m_spiSeiNumBitsInPrefixIndicationMinus1);
   m_cEncLib.setSpiSeiPrefixDataBit(m_spiSeiSeiPrefixDataBit);
   m_cEncLib.setSpiByteAlignmentBitEqualToOne(m_spiSeiByteAlignmentBitEqualToOne);
+#endif
+
+#if SEI_APP3
+  //manifest
+  m_cEncLib.setSmSEIManifestSeiEnabled(m_smSeiManifestSeiEnabled);
+  m_cEncLib.setSmSEIManifestNumSeiMsgTypes(m_smSeiManifestNumSeiMsgTypes);
+  m_cEncLib.setSmSEIManifestSeiPayloadType(m_smSeiManifestSeiPayloadType);
+  m_cEncLib.setSmSEIManifestSeiDescription(m_smSeiManifestSeiDescription);
+  m_cEncLib.setSmSEINumSeiPrefixIndications(m_smSeiNumSeiPrefixIndications);
+  m_cEncLib.setSmSEINumBitsInPrefixIndication(m_smSeiNumBitsInPrefixIndication);
+  m_cEncLib.setSmSeiPrefixDatabit(m_smSeiSeiPrefixDataBit);
+  m_cEncLib.setSmByteAlignmentBitEqualToOne(m_smSeiByteAlignmentBitEqualToOne);
+  //prefix
+  m_cEncLib.setSpiPrefixIndicationSeiEnabled(m_spiSeiPrefixIndicationSeiEnabled);
+  m_cEncLib.setSpiPrefixSeiPayloadType(m_spiSeiPrefixSeiPayloadType);
+  m_cEncLib.setSpiNumBitsInPrefixIndicationMinus1(m_spiSeiNumBitsInPrefixIndicationMinus1);
+  m_cEncLib.setSpiSeiPrefixDataBit(m_spiSeiSeiPrefixDataBit);
+
+
+
 #endif
 
 
