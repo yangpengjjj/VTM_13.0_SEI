@@ -115,8 +115,8 @@ typedef std::pair<int, int>  TrCost;
 
 #if PJ_SEI_MSG
 
-#define SEI_APP1                                          0
-#define SEI_APP3                                          1
+#define SEI_APP1                                          1
+#define SEI_APP3                                          0
 #define SEI_APP2_ALLINONE                                 0
 
 #if SEI_APP3

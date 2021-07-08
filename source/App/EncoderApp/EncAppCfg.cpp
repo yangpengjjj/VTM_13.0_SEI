@@ -2669,7 +2669,7 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
    }
 #endif
 
-//pj?
+
 #if SEI_APP3
    if (m_smSeiManifestSeiEnabled)
    {
