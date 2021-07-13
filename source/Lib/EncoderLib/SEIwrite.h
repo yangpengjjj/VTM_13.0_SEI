@@ -60,7 +60,7 @@ protected:
   void xWriteSEIFrameFieldInfo(const SEIFrameFieldInfo& sei);
   void xWriteSEIDependentRAPIndication(const SEIDependentRAPIndication& sei);
   void xWriteSEIScalableNesting(OutputBitstream& bs, const SEIScalableNesting& sei);
-  void xWriteSEIFramePacking(const SEIFramePacking& sei);
+  void xWriteSEIFramePacking(const SEIFramePacking &sei, bool isSPI = false);
   void xWriteSEIParameterSetsInclusionIndication(const SEIParameterSetsInclusionIndication& sei);
   void xWriteSEIMasteringDisplayColourVolume( const SEIMasteringDisplayColourVolume& sei);
 #if U0033_ALTERNATIVE_TRANSFER_CHARACTERISTICS_SEI

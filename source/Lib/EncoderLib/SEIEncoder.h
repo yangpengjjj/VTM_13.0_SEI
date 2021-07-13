@@ -90,7 +90,7 @@ public:
   void initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessages& seiMessage);
 #endif
 #if SEI_PREFIX_APP1 || SEI_APP3
-  void initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, SEI *sei);
+  void initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, const SEI *sei);
 #endif
 
   bool initSEIAnnotatedRegions(SEIAnnotatedRegions *sei, int currPOC);

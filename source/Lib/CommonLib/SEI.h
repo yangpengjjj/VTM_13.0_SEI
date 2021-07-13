@@ -780,9 +780,15 @@ public:
   unsigned char                 m_numSeiPrefixIndicationsMinus1;
   std::vector<unsigned short>   m_numBitsInPrefixIndicationMinus1;
   std::vector<std::vector<int>> m_seiPrefixDataBit;
-  int m_byteAlignmentBitEqualToOne;
+  int                           m_byteAlignmentBitEqualToOne;
 
-  int getNumOfIndications(const PayloadType payloadType);
+  const SEI *m_payload;
+
+  std::pair<int, std::vector<int>> getNumsOfSPI(const SEI *sei);
+
+private:
+  int getNumBitsOfUEV(int v);
+  int getNumBitsOfSEV(int v);
 
 };
 

@@ -128,9 +128,9 @@ void SEIWriter::xWriteSEIpayloadData(OutputBitstream &bs, const SEI& sei, HRD &h
     xWriteSEISampleAspectRatioInfo(*static_cast<const SEISampleAspectRatioInfo*>(&sei));
     break;
 #if SEI_MANIFEST_APP1 || SEI_APP3
-    case SEI::SEI_MANIFEST : 
-      xWriteSEIManifest(*static_cast<const SEIManifest *>(&sei));
-      break;
+  case SEI::SEI_MANIFEST: 
+    xWriteSEIManifest(*static_cast<const SEIManifest *>(&sei)); 
+    break;
 #endif   
 #if SEI_PREFIX_APP1 || SEI_APP3
     case SEI::SEI_PREFIX_INDICATION : 
@@ -554,7 +554,7 @@ void SEIWriter::xWriteSEIScalableNesting(OutputBitstream& bs, const SEIScalableN
   writeSEImessages(bs, sei.m_nestedSEIs, m_nestingHrd, true, 0);
 }
 
-void SEIWriter::xWriteSEIFramePacking(const SEIFramePacking& sei)
+void SEIWriter::xWriteSEIFramePacking(const SEIFramePacking& sei, bool isSPI)
 {
   WRITE_UVLC( sei.m_arrangementId,                  "fp_arrangement_id" );
   WRITE_FLAG( sei.m_arrangementCancelFlag,          "fp_arrangement_cancel_flag" );
@@ -562,8 +562,12 @@ void SEIWriter::xWriteSEIFramePacking(const SEIFramePacking& sei)
   if( sei.m_arrangementCancelFlag == 0 )
   {
     WRITE_CODE( sei.m_arrangementType, 7,           "fp_arrangement_type" );
-
     WRITE_FLAG( sei.m_quincunxSamplingFlag,         "fp_quincunx_sampling_flag" );
+
+#if SEI_PREFIX_APP1
+    if (isSPI)
+      return;
+#endif
     WRITE_CODE( sei.m_contentInterpretationType, 6, "fp_content_interpretation_type" );
     WRITE_FLAG( sei.m_spatialFlippingFlag,          "fp_spatial_flipping_flag" );
     WRITE_FLAG( sei.m_frame0FlippedFlag,            "fp_frame0_flipped_flag" );
@@ -633,54 +637,13 @@ void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei)
   for (int i = 0; i <= sei.m_numSeiPrefixIndicationsMinus1; i++) 
   {
     WRITE_CODE(sei.m_numBitsInPrefixIndicationMinus1[i], 16, "num_bits_in_prefix_indication_minus1");
-    for (int j = 0; j <= sei.m_numBitsInPrefixIndicationMinus1[i]; j++) 
-    {
-      WRITE_CODE(sei.m_seiPrefixDataBit[i][j], 1, "sei_prefix_data_bit");     
-    }
+    xWriteSEIFramePacking(*static_cast<const SEIFramePacking *>(sei.m_payload), true);
     while (m_pcBitIf->getNumberOfWrittenBits() % 8 != 0)
     {
-      WRITE_FLAG(1, "byte_alignment_bit_equal_to_one");     
+      WRITE_FLAG(sei.m_byteAlignmentBitEqualToOne, "byte_alignment_bit_equal_to_one");     
     }   
   }
 }
-#endif
-
-#if SEI_APP3
-void SEIWriter::xWriteSEIManifest(const SEIManifest &sei)
-{
-  WRITE_CODE(sei.m_manifestNumSeiMsgTypes, 16, "manifest_num_sei_msg_types");
-  for (int i = 0; i < sei.m_manifestNumSeiMsgTypes; i++)
-  {
-    WRITE_CODE(sei.m_manifestSeiPayloadType[i], 16, "manifest_sei_payload_types");
-    WRITE_CODE(sei.m_manifestSeiDescription[i], 8, "manifest_sei_description");
-  }
-  for (int i = 0; i < sei.m_manifestNumSeiMsgTypes; i++)
-  {
-    WRITE_CODE(sei.m_numSeiPrefixIndications[i], 8, "num_sei_prefix_indications");
-    for (int j = 0; j < sei.m_numSeiPrefixIndications[i]; j++)
-    {
-      WRITE_CODE(sei.m_numBitsInPrefixIndication[i][j], 16, "num_bits_in_prefix_indication");
-      for (int k = 0; k < sei.m_numBitsInPrefixIndication[i][j]; k++)
-      {
-        WRITE_CODE(sei.m_seiPrefixDataBit[i][j][k], 1, "sei_prefix_databit");
-      }
-      while (m_pcBitIf->getNumberOfWrittenBits() % 8 != 0)
-      {
-        WRITE_FLAG(1, "byte_alignment_bit_equal_to_one");
-      }
-    }
-  }
-}
-void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei)
-{
-  WRITE_CODE(sei.m_prefixSeiPayloadType, 16, "prefix_sei_payload_type");
-  WRITE_CODE(sei.m_numBitsInPrefixIndicationMinus1, 16, "num_bits_in_prefix_indication_minus1");
-  for (int i = 0; i <= sei.m_numBitsInPrefixIndicationMinus1; i++)
-  {
-    WRITE_CODE(sei.m_seiPrefixDataBit[i], 1, "sei_prefix_databit");
-  }
-}
-
 #endif
 
 

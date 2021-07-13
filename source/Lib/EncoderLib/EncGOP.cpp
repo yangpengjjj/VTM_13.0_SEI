@@ -785,7 +785,7 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
     m_seiEncoder.initSEIAmbientViewingEnvironment(seiAVE);
     seiMessages.push_back(seiAVE);
   }
-
+  
   // content colour volume
   if (m_pcCfg->getCcvSEIEnabled())
   {
@@ -803,6 +803,7 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
   }
 #endif
 #if SEI_PREFIX_APP1
+
   if (m_pcCfg->getSpiPrefixIndicationSeiEnabled())
   {
     int NumOfSEIPrefixMsg = 0;
@@ -814,7 +815,8 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
       if (NumOfSEIPrefixMsg == 0)
       {
         break;
-      }  
+      }
+      //pj? 需要判断是否有manifest msg 不应包含
       SEIPrefixIndication *seiSEIPrefixIndication = new SEIPrefixIndication;
       m_seiEncoder.initSEISeiPrefixIndication(seiSEIPrefixIndication, it);
       seiMessages.push_back(seiSEIPrefixIndication);   
@@ -822,6 +824,7 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
   }
 #endif
 
+  //确保sei_manifest和sei_prefix信息为最后两个sei_msg
 #if SEI_APP3
   if (m_pcCfg->getSmSeiManifestSeiEnabled())
   {

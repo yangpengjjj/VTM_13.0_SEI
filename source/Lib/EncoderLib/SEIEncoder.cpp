@@ -892,25 +892,24 @@ void SEIEncoder::initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessag
 #endif
 
 #if SEI_PREFIX_APP1
-void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, SEI* sei) 
+void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, const SEI* sei) 
 {
   assert(m_isInitialized);
   assert(seiSeiPrefixIndications != NULL);
   seiSeiPrefixIndications->m_prefixSeiPayloadType          = sei->payloadType();
-  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = seiSeiPrefixIndications->getNumOfIndications(sei->payloadType()) - 1;   // pj? indicator应该怎么分?
+  auto nums                                                = seiSeiPrefixIndications->getNumsOfSPI(sei);
+  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = nums.first - 1;   // pj? indicator应该怎么分?
+  seiSeiPrefixIndications->m_byteAlignmentBitEqualToOne    = 1;
+  seiSeiPrefixIndications->m_payload                       = sei;
+
   seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1.resize(seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 + 1);
-
-
   seiSeiPrefixIndications->m_seiPrefixDataBit.resize(seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 + 1);
+  
   for (int i = 0; i <= seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1; i++) 
   {
-    seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i] = m_pcCfg->getSpiNumBitsInPrefixIndicationMinus1(i);
+    seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i] = nums.second[i] - 1;
     seiSeiPrefixIndications->m_seiPrefixDataBit[i].resize(seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i] + 1);
-    for (int j = 0; j <= seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i]; j++) 
-    {
-      seiSeiPrefixIndications->m_seiPrefixDataBit[i][j] = m_pcCfg->getSpiSeiPrefixDataBit(i, j);
-    }
-    //seiSeiPrefixIndications->m_byteAlignmentBitEqualToOne = m_pcCfg->getSpiByteAlignmentBitEqualToOne();
+
   } 
 }
 #endif   

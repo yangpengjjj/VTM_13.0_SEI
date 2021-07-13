@@ -688,30 +688,6 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
 
   SMultiValueInput<Level::Name>  cfg_sliRefLevels(Level::NONE, Level::LEVEL15_5, 0, 8 * MAX_VPS_SUBLAYERS);
 
-#if SEI_MANIFEST_APP1 || SEI_APP3
-  SMultiValueInput<uint32_t>     cfg_smSeiManifestSeiPayloadType(0, std::numeric_limits<unsigned short>::max(), 0,
-                                                                 std::numeric_limits<unsigned short>::max());
-  SMultiValueInput<uint32_t> cfg_smSeiManifestSeiDescription(0, 3, 0, std::numeric_limits<unsigned char>::max());
-#if SEI_APP3
-  SMultiValueInput<uint32_t>     cfg_smSeiNumSeiPrefixIndications(0, std::numeric_limits<unsigned char>::max(), 0,
-                                                                  std::numeric_limits<unsigned char>::max());
-  SMultiValueInput<uint32_t>     cfg_smSeiNumBitsInPrefixIndication(0, std::numeric_limits<unsigned short>::max(), 0,
-                                                                 std::numeric_limits<unsigned short>::max());
-  SMultiValueInput<uint32_t>     cfg_smSeiSeiPrefixDataBit(0, std::numeric_limits<unsigned short>::max(), 0,
-                                                           std::numeric_limits<unsigned short>::max());
-  //prefix
-
-  SMultiValueInput<uint32_t> cfg_spiSeiSeiPrefixDataBit(0, std::numeric_limits<unsigned short>::max(), 0,
-                                                            std::numeric_limits<unsigned short>::max());
-#endif
-#endif
-#if SEI_PREFIX_APP1
-  SMultiValueInput<uint32_t> cfg_spiSeiNumBitsInPrefixIndicationMinus1(
-    0, std::numeric_limits<unsigned short>::max(), 0, std::numeric_limits<unsigned short>::max());
-  SMultiValueInput<uint32_t> cfg_spiSeiSeiPrefixDataBit(0, std::numeric_limits<unsigned short>::max(), 0,
-                                                             std::numeric_limits<unsigned short>::max());
-#endif
-
   int warnUnknowParameter = 0;
 
 #if ENABLE_TRACING
@@ -1483,32 +1459,11 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
                                                                                                                   " E.g. --TemporalFilterStrengthFrame8 0.95 will enable GOP based temporal filter at every 8th frame with strength 0.95");
 #if PJ_SEI_MSG
   opts.addOptions()
-#if SEI_MANIFEST_APP1 || SEI_APP3
+#if SEI_MANIFEST_APP1
     ("SEISmEnabled",                                    m_smSeiManifestSeiEnabled,                false,                                    "Controls if SEI Manifest SEI messages enabled")
-    ("SEISmSeiManifestNumSeiMsgTypes",                  m_smSeiManifestNumSeiMsgTypes,            0,                                        "Specifies the number of SEI Manifest SEI message types")
-    ("SEISmSeiManifestSeiPayloadType",                  cfg_smSeiManifestSeiPayloadType,          cfg_smSeiManifestSeiPayloadType,          "Specifies the payload type of the SEI message in the manifest")
-    ("SEISmSeiManifestSeiDescription",                  cfg_smSeiManifestSeiDescription,          cfg_smSeiManifestSeiDescription,          "Specifies the description of the SEI message in the manifest")
-#if SEI_APP3
-    ("SEISmSeiNumSeiPrefixIndications",                 cfg_smSeiNumSeiPrefixIndications,         cfg_smSeiNumSeiPrefixIndications,         "Specifies the number of SEI prefix indications" )
-    ("SEISmSeiNumBitsInPrefixIndication",               cfg_smSeiNumBitsInPrefixIndication,       cfg_smSeiNumBitsInPrefixIndication,       "Specifies the number of bits in the SEI prefix indications" )
-    ("SEISmSeiPrefixDataBit",                           cfg_smSeiSeiPrefixDataBit,                cfg_smSeiSeiPrefixDataBit,                "Specifies the bits of the SEI prefix indications")
-    ("SEISpiByteAlignmentBitEqualToOne",                m_smSeiByteAlignmentBitEqualToOne,        0,                                        "Specifies the byte alignment in the SEI prefix indications (shall be equal to 1)")
-
-    //prefix
-    ("SEISpiEnabled",                                   m_spiSeiPrefixIndicationSeiEnabled,       false,                                    "Controls if SEI Prefix Indications SEI messages enabled")
-    ("SEISpiSeiPrefixSeiPayloadType",                   m_spiSeiPrefixSeiPayloadType,             0,                                        "Specifies the payload type of the SEI messages")
-    ("SEISpiNumBitsInPrefixIndicationMinus1",           m_spiSeiNumBitsInPrefixIndicationMinus1,  0,                                        "Specifies the number of bits in the SEI prefix indications")
-    ("SEISpiSeiPrefixDataBit",                          cfg_spiSeiSeiPrefixDataBit,               cfg_spiSeiSeiPrefixDataBit,               "Specifies the bits of the SEI prefix indications")
-
-#endif
 #endif
 #if SEI_PREFIX_APP1
     ("SEISpiEnabled",                                   m_spiSeiPrefixIndicationSeiEnabled,       false,                                    "Controls if SEI Prefix Indications SEI messages enabled")
-    ("SEISpiSeiPrefixSeiPayloadType",                   m_spiSeiPrefixSeiPayloadType,             0,                                        "Specifies the payload type of the SEI messages")
-    ("SEISpiNumSeiPrefixIndicationsMinus1",             m_spiSeiNumSeiPrefixIndicationsMinus1,    0,                                        "Specifies the number of SEI prefix indications")
-    ("SEISpiNumBitsInPrefixIndicationMinus1",           cfg_spiSeiNumBitsInPrefixIndicationMinus1,cfg_spiSeiNumBitsInPrefixIndicationMinus1,"Specifies the number of bits in the SEI prefix indications")
-    ("SEISpiSeiPrefixDataBit",                          cfg_spiSeiSeiPrefixDataBit,               cfg_spiSeiSeiPrefixDataBit,               "Specifies the bits of the SEI prefix indications")
-    ("SEISpiByteAlignmentBitEqualToOne",                m_spiSeiByteAlignmentBitEqualToOne,       0,                                       "Specifies the byte alignment in the SEI prefix indications (shall be equal to 1)")
 #endif
     ;
 #endif
@@ -2635,176 +2590,6 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
 
   m_uiMaxCUWidth = m_uiMaxCUHeight = m_uiCTUSize;
 
-#if SEI_MANIFEST_APP1
-  if (m_smSeiManifestSeiEnabled)  
-   {
-    CHECK(!(m_smSeiManifestNumSeiMsgTypes > 0
-            && m_smSeiManifestNumSeiMsgTypes <= std::numeric_limits<unsigned short>::max()),
-          "invalid value for SEISmSeiManifestNumSeiMsgTypes");
-    CHECK(!(cfg_smSeiManifestSeiPayloadType.values.size() == m_smSeiManifestNumSeiMsgTypes
-            && cfg_smSeiManifestSeiDescription.values.size() == m_smSeiManifestNumSeiMsgTypes),
-          "invalid value for SEISmSeiManifestNumSeiMsgTypes, does not match the other SEI manifest options");
-    m_smSeiManifestSeiPayloadType.resize(m_smSeiManifestNumSeiMsgTypes);
-    m_smSeiManifestSeiDescription.resize(m_smSeiManifestNumSeiMsgTypes);
-
-    for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++)
-    {
-      m_smSeiManifestSeiPayloadType[i] =
-        cfg_smSeiManifestSeiPayloadType.values.size() > i ? cfg_smSeiManifestSeiPayloadType.values[i] : 0;
-      m_smSeiManifestSeiDescription[i] =
-        cfg_smSeiManifestSeiDescription.values.size() > i ? cfg_smSeiManifestSeiDescription.values[i] : 0;
-      CHECK(!(m_smSeiManifestSeiDescription[i] >= 0 && m_smSeiManifestSeiDescription[i] <= 3),
-            "invalid value for SEISmSeiManifestSeiDescription");
-    }
-
-    for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++)
-    {
-      for (int j = i + 1; j < m_smSeiManifestNumSeiMsgTypes; j++)
-      {
-        if (i != j)
-          CHECK(!(m_smSeiManifestSeiPayloadType[i] != m_smSeiManifestSeiPayloadType[j]),
-                "invalid value for SEISmSeiManifestSeiDescription");
-      }
-    }    
-   }
-#endif
-
-
-#if SEI_APP3
-   if (m_smSeiManifestSeiEnabled)
-   {
-     CHECK(!(m_smSeiManifestNumSeiMsgTypes > 0
-             && m_smSeiManifestNumSeiMsgTypes <= std::numeric_limits<unsigned short>::max()),
-           "invalid value for SEISmSeiManifestNumSeiMsgTypes");
-     CHECK(!(cfg_smSeiManifestSeiPayloadType.values.size() == m_smSeiManifestNumSeiMsgTypes
-             && cfg_smSeiManifestSeiDescription.values.size() == m_smSeiManifestNumSeiMsgTypes),
-           "invalid value for SEISmSeiManifestNumSeiMsgTypes, does not match the other SEI manifest options");
-     m_smSeiManifestSeiPayloadType.resize(m_smSeiManifestNumSeiMsgTypes);
-     m_smSeiManifestSeiDescription.resize(m_smSeiManifestNumSeiMsgTypes);
-
-     for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++)
-     {
-       m_smSeiManifestSeiPayloadType[i] =
-         cfg_smSeiManifestSeiPayloadType.values.size() > i ? cfg_smSeiManifestSeiPayloadType.values[i] : 0;
-       m_smSeiManifestSeiDescription[i] =
-         cfg_smSeiManifestSeiDescription.values.size() > i ? cfg_smSeiManifestSeiDescription.values[i] : 0;
-       CHECK(!(m_smSeiManifestSeiDescription[i] >= 0 && m_smSeiManifestSeiDescription[i] <= 3),
-             "invalid value for SEISmSeiManifestSeiDescription");
-     }
-
-     for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++)
-     {
-       for (int j = i + 1; j < m_smSeiManifestNumSeiMsgTypes; j++)
-       {
-         if (i != j)
-           CHECK(!(m_smSeiManifestSeiPayloadType[i] != m_smSeiManifestSeiPayloadType[j]),
-                 "invalid value for SEISmSeiManifestSeiDescription");
-       }
-     }
-
-     int idx1 = 0;
-     int idx2 = 0;
-     m_smSeiNumSeiPrefixIndications.resize(m_smSeiManifestNumSeiMsgTypes);
-     m_smSeiNumBitsInPrefixIndication.resize(m_smSeiManifestNumSeiMsgTypes);
-     m_smSeiSeiPrefixDataBit.resize(m_smSeiManifestNumSeiMsgTypes);
-     for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++) {
-       m_smSeiNumSeiPrefixIndications[i] =
-         cfg_smSeiNumSeiPrefixIndications.values.size() > i ? cfg_smSeiNumSeiPrefixIndications.values[i] : 0;
-       m_smSeiNumBitsInPrefixIndication[i].resize(m_smSeiNumSeiPrefixIndications[i]);
-       m_smSeiSeiPrefixDataBit[i].resize(m_smSeiNumSeiPrefixIndications[i]);
-       for (int j = 0; j < m_smSeiNumSeiPrefixIndications[i]; j++)
-       {
-         m_smSeiNumBitsInPrefixIndication[i][j] =
-           cfg_smSeiNumBitsInPrefixIndication.values.size() > idx1 ? cfg_smSeiNumBitsInPrefixIndication.values[idx1] : 0;
-         idx1++;
-         m_smSeiSeiPrefixDataBit[i][j].resize(m_smSeiNumBitsInPrefixIndication[i][j]);
-         for (int k = 0; k < m_smSeiNumBitsInPrefixIndication[i][j]; k++) {
-           m_smSeiSeiPrefixDataBit[i][j][k] =
-             cfg_spiSeiSeiPrefixDataBit.values.size() > idx2 ? cfg_spiSeiSeiPrefixDataBit.values[idx2] : 0;
-           idx2++;
-         }
-         CHECK(!(m_smSeiByteAlignmentBitEqualToOne == 1), "invalid value for SEISpiByteAlignmentBitEqualToOne");
-       }
-     }
-   }
-
-  if (m_spiSeiPrefixIndicationSeiEnabled) 
-  {
-    CHECK(!(m_spiSeiPrefixSeiPayloadType > 0 && m_spiSeiPrefixSeiPayloadType <= std::numeric_limits<unsigned short>::max()),
-          "invalid value for SEISpiPrefixSeiPayloadType");
-
-    m_spiSeiSeiPrefixDataBit.resize(m_spiSeiNumBitsInPrefixIndicationMinus1 + 1);
-    for (int i = 0; i <= m_spiSeiNumBitsInPrefixIndicationMinus1; i++) {
-      m_spiSeiSeiPrefixDataBit[i] =
-        cfg_spiSeiSeiPrefixDataBit.values.size() > i ? cfg_spiSeiSeiPrefixDataBit.values[i] : 0;
-    }
-  }
-  // Checks related to sei prefix indication sei messages' relation with sei manifest sei messages
-  if (m_smSeiManifestSeiEnabled)
-  {
-    bool payloaTypeMatchFound = false;
-    for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++)
-    {
-      if (m_spiSeiPrefixSeiPayloadType == m_smSeiManifestSeiPayloadType[i])
-      {
-        payloaTypeMatchFound = true;
-        break;
-      }
-    }
-    CHECK(!(payloaTypeMatchFound == true),
-          "payload type found in both SEISpiSeiPrefixSeiPayloadType & SEISmSeiManifestSeiPayloadType");
-  }
-
-#endif
-#if SEI_PREFIX_APP1
-    if (m_spiSeiPrefixIndicationSeiEnabled) 
-    {
-      CHECK(!(m_spiSeiNumSeiPrefixIndicationsMinus1 >= 0
-               && m_spiSeiNumSeiPrefixIndicationsMinus1 < std::numeric_limits<unsigned short>::max()),
-             "invalid value for SEISpiNumSeiPrefixIndicationsMinus1");
-      CHECK(!(cfg_spiSeiNumBitsInPrefixIndicationMinus1.values.size() == m_spiSeiNumSeiPrefixIndicationsMinus1 + 1),
-             "invalid value for SEISpiNumBitsInPrefixIndicationMinus1");
-      m_spiSeiNumBitsInPrefixIndicationMinus1.resize(m_spiSeiNumSeiPrefixIndicationsMinus1 + 1);
-      m_spiSeiSeiPrefixDataBit.resize(m_spiSeiNumSeiPrefixIndicationsMinus1 + 1);
-      int idx                  = 0;
-      int  size_j_prefixDataBit = 0;
-      for (int i = 0; i <= m_spiSeiNumSeiPrefixIndicationsMinus1; i++) 
-      {
-        m_spiSeiNumBitsInPrefixIndicationMinus1[i] = cfg_spiSeiNumBitsInPrefixIndicationMinus1.values.size() > i
-                                                        ? cfg_spiSeiNumBitsInPrefixIndicationMinus1.values[i]
-                                                        : 0;
-        m_spiSeiSeiPrefixDataBit[i].resize(m_spiSeiNumBitsInPrefixIndicationMinus1[i] + 1);
-        size_j_prefixDataBit = cfg_spiSeiSeiPrefixDataBit.values[idx];
-        for (int j = 0; j <= m_spiSeiNumBitsInPrefixIndicationMinus1[i]; j++) 
-        {
-          CHECK(!(size_j_prefixDataBit == m_spiSeiNumBitsInPrefixIndicationMinus1[i] + 1),
-                 "invalid value for SEISpiSeiPrefixDataBit");
-          m_spiSeiSeiPrefixDataBit[i][j] =
-            cfg_spiSeiSeiPrefixDataBit.values[idx] > 0 ? cfg_spiSeiSeiPrefixDataBit.values[idx + 1] : 0;
-          idx++;
-          
-        }
-        idx++;
-        CHECK(!(m_spiSeiByteAlignmentBitEqualToOne == 1), "invalid value for SEISpiByteAlignmentBitEqualToOne");
-        
-      }
-         // Checks related to sei prefix indication sei messages' relation with sei manifest sei messages
-        if (m_smSeiManifestSeiEnabled)      
-      {
-        bool payloaTypeMatchFound = false;
-        for (int i = 0; i < m_smSeiManifestNumSeiMsgTypes; i++) 
-        {
-          if (m_spiSeiPrefixSeiPayloadType == m_smSeiManifestSeiPayloadType[i]) 
-          {
-            payloaTypeMatchFound = true;
-            break;          
-          }        
-        }
-        CHECK(!(payloaTypeMatchFound == true),
-               "payload type found in both SEISpiSeiPrefixSeiPayloadType & SEISmSeiManifestSeiPayloadType");
-      }     
-    }
-#endif
 
   // check validity of input parameters
   if( xCheckParameter() )

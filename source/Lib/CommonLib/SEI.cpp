@@ -215,11 +215,50 @@ SEIManifest::SEIManifestDescription SEIManifest::getSEIMessageDescription(const 
 #endif
 
 #if SEI_PREFIX_APP1
-int SEIPrefixIndication::getNumOfIndications(const PayloadType payloadType) {
+std::pair<int, std::vector<int>> SEIPrefixIndication::getNumsOfSPI(const SEI* sei)
+{
+  PayloadType payloadType = sei->payloadType();  
+  CHECK((payloadType == SEI_MANIFEST), "SEI_SPI should not include SEI_manfest");
+  
+  int numOfindications = 1;
+  std::vector<int> numBitsOfSPI;
+  int              numBits = 0;
 
-  // pj_add
-  return 1;
+  switch (payloadType)
+  {
+  case FRAME_PACKING: 
+    numBits += getNumBitsOfUEV(static_cast<const SEIFramePacking *>(sei)->m_arrangementId);
+    numBits += 9;
+    numBitsOfSPI.push_back(numBits);  
+    return { numOfindications, numBitsOfSPI };
+  
+  default: break;
+  }
+
+
+  // user data
+  numOfindications = 1;
+  int numBitsOfuuid    = 128;
+  return { numOfindications, { numBitsOfuuid } };
 }
 
+int SEIPrefixIndication::getNumBitsOfUEV(int v)
+{
+  if (v <= 0)
+    return 1;
+  else if (v <= 2)
+    return 3;
+  else if (v <= 6)
+    return 5;
+  else if (v <= 14)
+    return 7;
+  else
+    return 9;
+}
+
+int SEIPrefixIndication::getNumBitsOfSEV(int v)
+{
+  return 1;
+}
 
 #endif
