@@ -87,10 +87,10 @@ public:
   void initSEIAmbientViewingEnvironment(SEIAmbientViewingEnvironment *sei);
   void initSEIContentColourVolume(SEIContentColourVolume *sei);
 #if SEI_MANIFEST_APP1 || SEI_APP3
-  void initSEISeiManifest(SEIManifest *seiSeiManifest);
+  void initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessages& seiMessage);
 #endif
 #if SEI_PREFIX_APP1 || SEI_APP3
-  void initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications);
+  void initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, SEI *sei);
 #endif
 
   bool initSEIAnnotatedRegions(SEIAnnotatedRegions *sei, int currPOC);

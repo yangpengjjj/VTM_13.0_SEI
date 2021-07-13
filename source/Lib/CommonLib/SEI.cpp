@@ -190,3 +190,36 @@ const char *SEI::getSEIMessageString(SEI::PayloadType payloadType)
     default:                                        return "Unknown";
   }
 }
+
+#if SEI_MANIFEST_APP1
+SEIManifest::SEIManifestDescription SEIManifest::getSEIMessageDescription(const PayloadType payloadType)
+{
+  if ((payloadType == FRAME_PACKING) || (payloadType == 47) || (payloadType == EQUIRECTANGULAR_PROJECTION)
+      || (payloadType == GENERALIZED_CUBEMAP_PROJECTION) || (payloadType == SPHERE_ROTATION)
+      || (payloadType == REGION_WISE_PACKING))
+  {
+    return NESSARY_SEI_MESSAGE;
+  }
+  else if ((payloadType == USER_DATA_REGISTERED_ITU_T_T35) || (payloadType == USER_DATA_UNREGISTERED))
+  {
+    return UNDETERMINED_SEI_MESSAGE;
+  }
+  else
+  {
+    return UNNESSARY_SEI_MESSAGE;
+  }
+  return NO_SEI_MESSAGE;
+}
+
+
+#endif
+
+#if SEI_PREFIX_APP1
+int SEIPrefixIndication::getNumOfIndications(const PayloadType payloadType) {
+
+  // pj_add
+  return 1;
+}
+
+
+#endif

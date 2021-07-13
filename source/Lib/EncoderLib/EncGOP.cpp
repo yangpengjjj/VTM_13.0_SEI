@@ -561,7 +561,7 @@ void EncGOP::xWriteLeadingSEIOrdered (SEIMessages& seiMessages, SEIMessages& duI
   if (m_pcCfg->getSpiPrefixIndicationSeiEnabled())   
   {
     currentMessages = extractSeisByType(localMessages, SEI::SEI_PREFIX_INDICATION);
-    CHECK(!(currentMessages.size() <= 1), "Unspecified error");
+    //CHECK(!(currentMessages.size() <= 1), "Unspecified error");
     xWriteSEI(NAL_UNIT_PREFIX_SEI, currentMessages, accessUnit, itNalu, temporalId);
     xClearSEIs(currentMessages, !testWrite);
     
@@ -798,16 +798,27 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
   if (m_pcCfg->getSmSeiManifestSeiEnabled()) 
   {
     SEIManifest *seiSEIManifest = new SEIManifest;
-    m_seiEncoder.initSEISeiManifest(seiSEIManifest);
+    m_seiEncoder.initSEISeiManifest(seiSEIManifest, seiMessages);
     seiMessages.push_back(seiSEIManifest);
   }
 #endif
 #if SEI_PREFIX_APP1
   if (m_pcCfg->getSpiPrefixIndicationSeiEnabled())
   {
-    SEIPrefixIndication *seiSEIPrefixIndication = new SEIPrefixIndication;
-    m_seiEncoder.initSEISeiPrefixIndication(seiSEIPrefixIndication);
-    seiMessages.push_back(seiSEIPrefixIndication);
+    int NumOfSEIPrefixMsg = 0;
+    for (auto &it: seiMessages) {
+      NumOfSEIPrefixMsg++;
+    }
+    for (auto &it: seiMessages) {
+      NumOfSEIPrefixMsg--;
+      if (NumOfSEIPrefixMsg == 0)
+      {
+        break;
+      }  
+      SEIPrefixIndication *seiSEIPrefixIndication = new SEIPrefixIndication;
+      m_seiEncoder.initSEISeiPrefixIndication(seiSEIPrefixIndication, it);
+      seiMessages.push_back(seiSEIPrefixIndication);   
+    }
   }
 #endif
 

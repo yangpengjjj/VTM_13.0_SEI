@@ -738,6 +738,8 @@ public:
 };
 
 #if SEI_MANIFEST_APP1
+
+
 class SEIManifest : public SEI
 {
 public:
@@ -746,13 +748,21 @@ public:
   SEIManifest() {}
   virtual ~SEIManifest() {}
 
-  unsigned short m_manifestNumSeiMsgTypes;
-  std::vector<unsigned short> m_manifestSeiPayloadType;
-  std::vector<unsigned char>  m_manifestSeiDescription;
+  enum SEIManifestDescription
+  {
+    NO_SEI_MESSAGE           = 0,
+    NESSARY_SEI_MESSAGE      = 1,
+    UNNESSARY_SEI_MESSAGE    = 2,
+    UNDETERMINED_SEI_MESSAGE = 3,
 
-  std::vector<unsigned char> m_numSeiPrefixIndications;
-  std::vector<std::vector<int>> m_numBitsInPrefixIndication;
-  std::vector<std::vector<std::vector<int>>> m_seiPrefixDataBit;
+    NUM_OF_DESCROPTION = 255
+  };
+  unsigned short              m_manifestNumSeiMsgTypes;
+  SEIMessages *               m_SEIList;
+  std::vector<unsigned int>   m_manifestSeiPayloadType;
+  std::vector<unsigned short> m_manifestSeiDescription;
+
+  SEIManifestDescription getSEIMessageDescription(const PayloadType payloadType);
 };
 
 #endif
@@ -766,12 +776,17 @@ public:
   SEIPrefixIndication() {}
   virtual ~SEIPrefixIndication() {}
 
-  unsigned short m_prefixSeiPayloadType;
-  unsigned char m_numSeiPrefixIndicationsMinus1;
-  std::vector<unsigned short> m_numBitsInPrefixIndicationMinus1;
+  unsigned short                m_prefixSeiPayloadType;
+  unsigned char                 m_numSeiPrefixIndicationsMinus1;
+  std::vector<unsigned short>   m_numBitsInPrefixIndicationMinus1;
   std::vector<std::vector<int>> m_seiPrefixDataBit;
   int m_byteAlignmentBitEqualToOne;
+
+  int getNumOfIndications(const PayloadType payloadType);
+
 };
+
+
 #endif  
 
 #if SEI_APP3

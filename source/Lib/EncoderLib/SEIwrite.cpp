@@ -627,6 +627,7 @@ void SEIWriter::xWriteSEIManifest(const SEIManifest &sei)
 #if SEI_PREFIX_APP1
 void SEIWriter::xWriteSEIPrefixIndication(const SEIPrefixIndication &sei) 
 {
+  
   WRITE_CODE(sei.m_prefixSeiPayloadType, 16, "prefix_sei_payload_type");
   WRITE_CODE(sei.m_numSeiPrefixIndicationsMinus1, 8, "num_sei_prefix_indications_minus1");
   for (int i = 0; i <= sei.m_numSeiPrefixIndicationsMinus1; i++) 
