@@ -194,7 +194,7 @@ const char *SEI::getSEIMessageString(SEI::PayloadType payloadType)
 #if SEI_MANIFEST_APP1
 SEIManifest::SEIManifestDescription SEIManifest::getSEIMessageDescription(const PayloadType payloadType)
 {
-  if ((payloadType == FRAME_PACKING) || (payloadType == 47) || (payloadType == EQUIRECTANGULAR_PROJECTION)
+  if ((payloadType == FRAME_PACKING) || (payloadType == EQUIRECTANGULAR_PROJECTION)
       || (payloadType == GENERALIZED_CUBEMAP_PROJECTION) || (payloadType == SPHERE_ROTATION)
       || (payloadType == REGION_WISE_PACKING))
   {
@@ -215,49 +215,19 @@ SEIManifest::SEIManifestDescription SEIManifest::getSEIMessageDescription(const 
 #endif
 
 #if SEI_PREFIX_APP1
-std::pair<int, std::vector<int>> SEIPrefixIndication::getNumsOfSPI(const SEI* sei)
+int SEIPrefixIndication::getNumsOfSeiPrefixIndications(const SEI *sei)
 {
-  PayloadType payloadType = sei->payloadType();  
+  PayloadType payloadType = sei->payloadType();
   CHECK((payloadType == SEI_MANIFEST), "SEI_SPI should not include SEI_manfest");
-  
-  int numOfindications = 1;
-  std::vector<int> numBitsOfSPI;
-  int              numBits = 0;
+  CHECK((payloadType == SEI_PREFIX_INDICATION), "SEI_SPI should not include itself");
 
-  switch (payloadType)
-  {
-  case FRAME_PACKING: 
-    numBits += getNumBitsOfUEV(static_cast<const SEIFramePacking *>(sei)->m_arrangementId);
-    numBits += 9;
-    numBitsOfSPI.push_back(numBits);  
-    return { numOfindications, numBitsOfSPI };
-  
-  default: break;
+  CHECK((payloadType == FILLER_PAYLOAD), "SEI_SPI unknown error");
+
+  std::vector<int> indication2 = {4,5,137,148,154};
+  for (int plt : indication2) {
+    if (payloadType == plt)
+      return 2;
   }
-
-
-  // user data
-  numOfindications = 1;
-  int numBitsOfuuid    = 128;
-  return { numOfindications, { numBitsOfuuid } };
-}
-
-int SEIPrefixIndication::getNumBitsOfUEV(int v)
-{
-  if (v <= 0)
-    return 1;
-  else if (v <= 2)
-    return 3;
-  else if (v <= 6)
-    return 5;
-  else if (v <= 14)
-    return 7;
-  else
-    return 9;
-}
-
-int SEIPrefixIndication::getNumBitsOfSEV(int v)
-{
   return 1;
 }
 

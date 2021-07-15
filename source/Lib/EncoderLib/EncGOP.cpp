@@ -811,15 +811,14 @@ void EncGOP::xCreateIRAPLeadingSEIMessages (SEIMessages& seiMessages, const SPS 
       NumOfSEIPrefixMsg++;
     }
     for (auto &it: seiMessages) {
-      NumOfSEIPrefixMsg--;
-      if (NumOfSEIPrefixMsg == 0)
+      if (NumOfSEIPrefixMsg == 0 || it->payloadType() == 200)
       {
         break;
       }
-      //pj? 需要判断是否有manifest msg 不应包含
       SEIPrefixIndication *seiSEIPrefixIndication = new SEIPrefixIndication;
       m_seiEncoder.initSEISeiPrefixIndication(seiSEIPrefixIndication, it);
       seiMessages.push_back(seiSEIPrefixIndication);   
+      NumOfSEIPrefixMsg--;
     }
   }
 #endif

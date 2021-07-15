@@ -884,7 +884,8 @@ void SEIEncoder::initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessag
     seiSeiManifest->m_manifestNumSeiMsgTypes += 1;
     auto tempPayloadType                        = it->payloadType();
     seiSeiManifest->m_manifestSeiPayloadType.push_back(tempPayloadType);
-    seiSeiManifest->m_manifestSeiDescription.push_back(seiSeiManifest->getSEIMessageDescription(tempPayloadType));
+    auto description = seiSeiManifest->getSEIMessageDescription(tempPayloadType);
+    seiSeiManifest->m_manifestSeiDescription.push_back(description);
     i++;
   }
   CHECK(seiSeiManifest->m_manifestNumSeiMsgTypes == 0, "No SEI messages available");
@@ -897,20 +898,9 @@ void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixInd
   assert(m_isInitialized);
   assert(seiSeiPrefixIndications != NULL);
   seiSeiPrefixIndications->m_prefixSeiPayloadType          = sei->payloadType();
-  auto nums                                                = seiSeiPrefixIndications->getNumsOfSPI(sei);
-  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = nums.first - 1;   // pj? indicator应该怎么分?
-  seiSeiPrefixIndications->m_byteAlignmentBitEqualToOne    = 1;
+  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = seiSeiPrefixIndications->getNumsOfSeiPrefixIndications(sei)-1;
   seiSeiPrefixIndications->m_payload                       = sei;
 
-  seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1.resize(seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 + 1);
-  seiSeiPrefixIndications->m_seiPrefixDataBit.resize(seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 + 1);
-  
-  for (int i = 0; i <= seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1; i++) 
-  {
-    seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i] = nums.second[i] - 1;
-    seiSeiPrefixIndications->m_seiPrefixDataBit[i].resize(seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1[i] + 1);
-
-  } 
 }
 #endif   
 

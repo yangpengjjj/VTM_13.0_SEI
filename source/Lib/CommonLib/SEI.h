@@ -783,13 +783,7 @@ public:
   int                           m_byteAlignmentBitEqualToOne;
 
   const SEI *m_payload;
-
-  std::pair<int, std::vector<int>> getNumsOfSPI(const SEI *sei);
-
-private:
-  int getNumBitsOfUEV(int v);
-  int getNumBitsOfSEV(int v);
-
+  int        getNumsOfSeiPrefixIndications(const SEI *sei);
 };
 
 
