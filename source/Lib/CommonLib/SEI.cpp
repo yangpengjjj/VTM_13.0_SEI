@@ -181,11 +181,11 @@ const char *SEI::getSEIMessageString(SEI::PayloadType payloadType)
     case SEI::SAMPLE_ASPECT_RATIO_INFO:             return "Sample aspect ratio information";
     case SEI::SUBPICTURE_LEVEL_INFO:                return "Subpicture level information";
     case SEI::ANNOTATED_REGIONS:                    return "Annotated Region";
-#if SEI_MANIFEST_APP1 || SEI_APP3
-    case SEI::SEI_MANIFEST: return "Sei manifest";
+#if SEI_MANIFEST_APP1
+    case SEI::SEI_MANIFEST:                         return "Sei manifest";
 #endif
-#if SEI_PREFIX_APP1 || SEI_APP3
-    case SEI::SEI_PREFIX_INDICATION: return "Sei prefix indication";
+#if SEI_PREFIX_APP1
+    case SEI::SEI_PREFIX_INDICATION:                return "Sei prefix indication";
 #endif   
     default:                                        return "Unknown";
   }
@@ -220,11 +220,15 @@ int SEIPrefixIndication::getNumsOfSeiPrefixIndications(const SEI *sei)
   PayloadType payloadType = sei->payloadType();
   CHECK((payloadType == SEI_MANIFEST), "SEI_SPI should not include SEI_manfest");
   CHECK((payloadType == SEI_PREFIX_INDICATION), "SEI_SPI should not include itself");
-
   CHECK((payloadType == FILLER_PAYLOAD), "SEI_SPI unknown error");
 
-  std::vector<int> indication2 = {4,5,137,148,154};
-  for (int plt : indication2) {
+  std::vector<PayloadType> indicationN = { REGION_WISE_PACKING }; //不能确定需要多少个indicator，将在writePrefix时确定
+  std::vector<PayloadType> indication2 = { SPHERE_ROTATION };     //需要两个indicator写完
+  for (auto plt: indicationN){
+    if (payloadType == plt)
+      return 3;
+  }
+  for (auto plt : indication2) {
     if (payloadType == plt)
       return 2;
   }

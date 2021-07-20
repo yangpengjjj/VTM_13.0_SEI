@@ -81,10 +81,10 @@ protected:
   void xWriteSEIContentLightLevelInfo(const SEIContentLightLevelInfo &sei, int SEIPrefixIndicationIdx = 0);
   void xWriteSEIAmbientViewingEnvironment(const SEIAmbientViewingEnvironment &sei, int SEIPrefixIndicationIdx = 0);
   void xWriteSEIContentColourVolume(const SEIContentColourVolume &sei, int SEIPrefixIndicationIdx = 0);
-#if SEI_MANIFEST_APP1 || SEI_APP3
+#if SEI_MANIFEST_APP1
   void xWriteSEIManifest(const SEIManifest &sei);
 #endif
-#if SEI_PREFIX_APP1 ||SEI_APP3
+#if SEI_PREFIX_APP1
   void xWriteSEIPrefixIndication(OutputBitstream &bs, const SEIPrefixIndication &sei, HRD &hrd, const uint32_t temporalId);
   int  getUESENumBits(std::string str, int codeNum);
   void xWriteSPIByteAlign();

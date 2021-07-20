@@ -88,10 +88,10 @@ protected:
   void xParseSEIAmbientViewingEnvironment     (SEIAmbientViewingEnvironment& sei,     uint32_t payloadSize,                     std::ostream *pDecodedMessageOutputStream);
   void xParseSEIContentColourVolume           (SEIContentColourVolume& sei,           uint32_t payloadSize,                     std::ostream *pDecodedMessageOutputStream);
 
-#if SEI_MANIFEST_APP1 || SEI_APP3
+#if SEI_MANIFEST_APP1
   void xParseSEISeiManifest                   (SEIManifest& sei,                      unsigned int payloadSize,                     std::ostream *pDecodedMessageOutputStream);
 #endif
-#if SEI_PREFIX_APP1 || SEI_APP3
+#if SEI_PREFIX_APP1
   void xParseSEISeiPrefixIndication           (SEIPrefixIndication& sei,              unsigned int payloadSize,                     std::ostream *pDecodedMessageOutputStream);
 #endif
 

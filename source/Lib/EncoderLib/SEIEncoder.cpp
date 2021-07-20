@@ -898,59 +898,11 @@ void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixInd
   assert(m_isInitialized);
   assert(seiSeiPrefixIndications != NULL);
   seiSeiPrefixIndications->m_prefixSeiPayloadType          = sei->payloadType();
-  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = seiSeiPrefixIndications->getNumsOfSeiPrefixIndications(sei)-1;
+  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = seiSeiPrefixIndications->getNumsOfSeiPrefixIndications(sei)-1; //不一定在初始化时确定
   seiSeiPrefixIndications->m_payload                       = sei;
 
 }
 #endif   
 
-#if SEI_APP3
-void SEIEncoder::initSEISeiManifest(SEIManifest *seiSeiManifest)
-{
-  assert(m_isInitialized);
-  assert(seiSeiManifest != NULL);
-  seiSeiManifest->m_manifestNumSeiMsgTypes = m_pcCfg->getSmSEIManifestNumSeiMsgTypes();
-
-  seiSeiManifest->m_manifestSeiPayloadType.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
-  seiSeiManifest->m_manifestSeiDescription.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
-
-  seiSeiManifest->m_numSeiPrefixIndications.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
-  seiSeiManifest->m_numBitsInPrefixIndication.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
-  seiSeiManifest->m_seiPrefixDataBit.resize(seiSeiManifest->m_manifestNumSeiMsgTypes);
-
-  for (int i = 0; i < seiSeiManifest->m_manifestNumSeiMsgTypes; i++)
-  {
-    seiSeiManifest->m_manifestSeiPayloadType[i] = m_pcCfg->getSmSEIManifestSeiPayloadType(i);
-    seiSeiManifest->m_manifestSeiDescription[i] = m_pcCfg->getSmSEIManifestSeiDescription(i);
-  }
-
-  for (int i = 0; i < seiSeiManifest->m_manifestNumSeiMsgTypes; i++) {
-    seiSeiManifest->m_numSeiPrefixIndications[i] = m_pcCfg->getSmSEINumSeiPrefixIndications(i);
-    seiSeiManifest->m_numBitsInPrefixIndication[i].resize(seiSeiManifest->m_numSeiPrefixIndications[i]);
-    seiSeiManifest->m_seiPrefixDataBit[i].resize(seiSeiManifest->m_numSeiPrefixIndications[i]);
-    for (int j = 0; j < seiSeiManifest->m_numSeiPrefixIndications[i]; j++) {
-      seiSeiManifest->m_numBitsInPrefixIndication[i][j] = m_pcCfg->getSmSEINumBitsInPrefixIndication(i, j);
-      seiSeiManifest->m_seiPrefixDataBit[i][j].resize(seiSeiManifest->m_numBitsInPrefixIndication[i][j]);
-      for (int k = 0; k < seiSeiManifest->m_numBitsInPrefixIndication[i][j]; k++) {
-        seiSeiManifest->m_seiPrefixDataBit[i][j][k] = m_pcCfg->getSmSeiPrefixDatabit(i, j, k);
-      }
-      seiSeiManifest->m_byteAlignmentBitEqualToOne = m_pcCfg->getSmByteAlignmentBitEqualToOne();
-    }
-  }
-}
-
-void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications)
-{
-  assert(m_isInitialized);
-  assert(seiSeiPrefixIndications != NULL);
-  seiSeiPrefixIndications->m_prefixSeiPayloadType          = m_pcCfg->getSpiPrefixSeiPayloadType();
-  seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1 = m_pcCfg->getSpiNumBitsInPrefixIndicationMinus1();
-  seiSeiPrefixIndications->m_seiPrefixDataBit.resize(seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1 + 1);
-  for (int i = 0; i < seiSeiPrefixIndications->m_numBitsInPrefixIndicationMinus1; i++) {
-    seiSeiPrefixIndications->m_seiPrefixDataBit[i] = m_pcCfg->getSpiSeiPrefixDataBit(i);
-    //std::cout << "set__" << seiSeiPrefixIndications->m_seiPrefixDataBit[i] << std::endl;
-  }
-}
-#endif
 
 //! \}

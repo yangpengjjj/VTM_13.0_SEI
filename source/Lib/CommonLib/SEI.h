@@ -80,10 +80,10 @@ public:
     AMBIENT_VIEWING_ENVIRONMENT          = 148,
     CONTENT_COLOUR_VOLUME                = 149,
 
-#if SEI_MANIFEST_APP1 || SEI_APP3
+#if SEI_MANIFEST_APP1
     SEI_MANIFEST = 200,
 #endif   
-#if SEI_PREFIX_APP1 ||SEI_APP3
+#if SEI_PREFIX_APP1
     SEI_PREFIX_INDICATION = 201,
 #endif
     ANNOTATED_REGIONS = 202,
@@ -789,38 +789,6 @@ public:
 
 #endif  
 
-#if SEI_APP3
-class SEIManifest : public SEI
-{
-public:
-  PayloadType payloadType() const { return SEI_MANIFEST; }
-
-  SEIManifest() {}
-  virtual ~SEIManifest() {}
-
-  unsigned short              m_manifestNumSeiMsgTypes;
-  std::vector<unsigned short> m_manifestSeiPayloadType;
-  std::vector<unsigned char>  m_manifestSeiDescription;
-  std::vector<unsigned char>                 m_numSeiPrefixIndications;
-  std::vector<std::vector<unsigned short>>   m_numBitsInPrefixIndication;
-  std::vector<std::vector<std::vector<int>>> m_seiPrefixDataBit;
-  int                                        m_byteAlignmentBitEqualToOne;
-};
-
-class SEIPrefixIndication : public SEI
-{
-public:
-  PayloadType payloadType() const { return SEI_PREFIX_INDICATION; }
-
-  SEIPrefixIndication() {}
-  virtual ~SEIPrefixIndication() {}
-
-  unsigned short            m_prefixSeiPayloadType;
-  unsigned short            m_numBitsInPrefixIndicationMinus1;
-  std::vector<int>          m_seiPrefixDataBit;
-};
-
-#endif
 
 
 
