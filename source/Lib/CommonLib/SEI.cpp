@@ -181,17 +181,17 @@ const char *SEI::getSEIMessageString(SEI::PayloadType payloadType)
     case SEI::SAMPLE_ASPECT_RATIO_INFO:             return "Sample aspect ratio information";
     case SEI::SUBPICTURE_LEVEL_INFO:                return "Subpicture level information";
     case SEI::ANNOTATED_REGIONS:                    return "Annotated Region";
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
     case SEI::SEI_MANIFEST:                         return "Sei manifest";
 #endif
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     case SEI::SEI_PREFIX_INDICATION:                return "Sei prefix indication";
 #endif   
     default:                                        return "Unknown";
   }
 }
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
 SEIManifest::SEIManifestDescription SEIManifest::getSEIMessageDescription(const PayloadType payloadType)
 {
   if ((payloadType == FRAME_PACKING) || (payloadType == EQUIRECTANGULAR_PROJECTION)
@@ -214,7 +214,7 @@ SEIManifest::SEIManifestDescription SEIManifest::getSEIMessageDescription(const 
 
 #endif
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
 int SEIPrefixIndication::getNumsOfSeiPrefixIndications(const SEI *sei)
 {
   PayloadType payloadType = sei->payloadType();

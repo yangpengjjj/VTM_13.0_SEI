@@ -86,10 +86,10 @@ public:
   void initSEIContentLightLevel(SEIContentLightLevelInfo *sei);
   void initSEIAmbientViewingEnvironment(SEIAmbientViewingEnvironment *sei);
   void initSEIContentColourVolume(SEIContentColourVolume *sei);
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
   void initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessages& seiMessage);
 #endif
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   void initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, const SEI *sei);
 #endif
 

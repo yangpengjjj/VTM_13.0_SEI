@@ -1121,13 +1121,13 @@ void EncApp::xInitLibCfg()
   m_cEncLib.setVPSParameters(m_cfgVPSParameters);
 
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
   /************************** SEI MANIFEST SEI MESSAGES **************************/
   m_cEncLib.setSmSEIManifestSeiEnabled(m_smSeiManifestSeiEnabled);
 
 #endif
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   /************************** SEI PREFIX INDICATIONS SEI MESSAGES **************************/
   m_cEncLib.setSpiPrefixIndicationSeiEnabled(m_spiSeiPrefixIndicationSeiEnabled);
 

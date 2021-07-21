@@ -50,6 +50,8 @@
 #include <assert.h>
 #include <cassert>
 
+//++
+
 #define JVET_V0106_RRC_RICE                               1 // JVET_V0106: Extension of the RRC rice derivation for high bit depth profile (VVCv2). 
 #define JVET_V0131_CORRECT_TR_HBD                          1 // correcting the 4x4 BDST7/DCT8 transform matrices for high bit-depth coding
 // clang-format off
@@ -118,8 +120,9 @@ typedef std::pair<int, int>  TrCost;
 #define SEI_APP1                                          1
 
 #if SEI_APP1
-#define SEI_MANIFEST_APP1                                 1
-#define SEI_PREFIX_APP1                                   1
+
+#define JVET_T0056_SEI_MANIFEST                           1
+#define JVET_T0056_SEI_PREFIX_INDICATION                  1
 #endif
 
 #endif

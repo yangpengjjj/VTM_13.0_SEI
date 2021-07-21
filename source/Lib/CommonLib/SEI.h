@@ -80,10 +80,10 @@ public:
     AMBIENT_VIEWING_ENVIRONMENT          = 148,
     CONTENT_COLOUR_VOLUME                = 149,
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
     SEI_MANIFEST = 200,
 #endif   
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     SEI_PREFIX_INDICATION = 201,
 #endif
     ANNOTATED_REGIONS = 202,
@@ -737,7 +737,7 @@ public:
   std::vector<std::pair<AnnotatedRegionLabelIndex,  AnnotatedRegionLabel>  > m_annotatedLabels;
 };
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
 
 
 class SEIManifest : public SEI
@@ -755,7 +755,7 @@ public:
     UNNESSARY_SEI_MESSAGE    = 2,
     UNDETERMINED_SEI_MESSAGE = 3,
 
-    NUM_OF_DESCROPTION = 255
+    NUM_OF_DESCROPTION       = 255,
   };
   unsigned short              m_manifestNumSeiMsgTypes;
   SEIMessages *               m_SEIList;
@@ -767,7 +767,7 @@ public:
 
 #endif
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
 class SEIPrefixIndication : public SEI
 {
 public:

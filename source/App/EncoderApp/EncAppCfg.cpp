@@ -1459,10 +1459,10 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
                                                                                                                   " E.g. --TemporalFilterStrengthFrame8 0.95 will enable GOP based temporal filter at every 8th frame with strength 0.95");
 #if PJ_SEI_MSG
   opts.addOptions()
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
     ("SEISmEnabled",                                    m_smSeiManifestSeiEnabled,                false,                                    "Controls if SEI Manifest SEI messages enabled")
 #endif
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     ("SEISpiEnabled",                                   m_spiSeiPrefixIndicationSeiEnabled,       false,                                    "Controls if SEI Prefix Indications SEI messages enabled")
 #endif
     ;

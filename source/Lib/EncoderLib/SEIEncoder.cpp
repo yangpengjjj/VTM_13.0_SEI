@@ -873,7 +873,7 @@ void SEIEncoder::initSEISubpictureLevelInfo(SEISubpicureLevelInfo *sei, const SP
   }
 }
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
 void SEIEncoder::initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessages& seiMessages) 
 {
   assert(m_isInitialized);
@@ -892,13 +892,13 @@ void SEIEncoder::initSEISeiManifest(SEIManifest *seiSeiManifest, const SEIMessag
 }
 #endif
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
 void SEIEncoder::initSEISeiPrefixIndication(SEIPrefixIndication *seiSeiPrefixIndications, const SEI* sei) 
 {
   assert(m_isInitialized);
   assert(seiSeiPrefixIndications != NULL);
   seiSeiPrefixIndications->m_prefixSeiPayloadType          = sei->payloadType();
-  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = seiSeiPrefixIndications->getNumsOfSeiPrefixIndications(sei)-1; //不一定在初始化时确定
+  seiSeiPrefixIndications->m_numSeiPrefixIndicationsMinus1 = seiSeiPrefixIndications->getNumsOfSeiPrefixIndications(sei)-1;   //不一定在初始化时确定
   seiSeiPrefixIndications->m_payload                       = sei;
 
 }

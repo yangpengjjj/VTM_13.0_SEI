@@ -127,15 +127,15 @@ void SEIWriter::xWriteSEIpayloadData(OutputBitstream &bs, const SEI& sei, HRD &h
   case SEI::SAMPLE_ASPECT_RATIO_INFO:
     xWriteSEISampleAspectRatioInfo(*static_cast<const SEISampleAspectRatioInfo *>(&sei), SEIPrefixIndicationIdx);
     break;
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
   case SEI::SEI_MANIFEST: 
-    CHECK((SEIPrefixIndicationIdx), "error SEI prefix indication message");
+    CHECK((SEIPrefixIndicationIdx), "wrong SEI prefix indication message");
     xWriteSEIManifest(*static_cast<const SEIManifest *>(&sei)); 
     break;
 #endif   
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   case SEI::SEI_PREFIX_INDICATION : 
-    CHECK((SEIPrefixIndicationIdx), "error SEI prefix indication message");
+    CHECK((SEIPrefixIndicationIdx), "wrong SEI prefix indication message");
     xWriteSEIPrefixIndication(bs, *static_cast<const SEIPrefixIndication *>(&sei), hrd, temporalId);
     break;
 #endif
@@ -216,7 +216,7 @@ void SEIWriter::writeSEImessages(OutputBitstream& bs, const SEIMessages &seiList
  */
 void SEIWriter::xWriteSEIuserDataUnregistered(const SEIuserDataUnregistered &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 128;
@@ -227,7 +227,7 @@ void SEIWriter::xWriteSEIuserDataUnregistered(const SEIuserDataUnregistered &sei
   {
     WRITE_CODE(sei.uuid_iso_iec_11578[i], 8 , "uuid_iso_iec_11578[i]");
   }
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -259,7 +259,7 @@ void SEIWriter::xWriteSEIDecodedPictureHash(const SEIDecodedPictureHash &sei, in
     case HASHTYPE_CHECKSUM: traceString="picture_checksum"; break;
     default: THROW("Unknown hash type"); break;
   }
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx)
     {
       int numBits = 16;
@@ -271,7 +271,7 @@ void SEIWriter::xWriteSEIDecodedPictureHash(const SEIDecodedPictureHash &sei, in
     WRITE_CODE(sei.method, 8, "dph_sei_hash_type");
     WRITE_CODE(sei.singleCompFlag, 1, "dph_sei_single_component_flag");
     WRITE_CODE(0, 7, "dph_sei_reserved_zero_7bits");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -287,7 +287,7 @@ void SEIWriter::xWriteSEIDecodedPictureHash(const SEIDecodedPictureHash &sei, in
 
 void SEIWriter::xWriteSEIDecodingUnitInfo(const SEIDecodingUnitInfo& sei, const SEIBufferingPeriod& bp, const uint32_t temporalId, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = getUESENumBits("ue", sei.m_decodingUnitIdx);
@@ -295,7 +295,7 @@ void SEIWriter::xWriteSEIDecodingUnitInfo(const SEIDecodingUnitInfo& sei, const 
   }
 #endif  
   WRITE_UVLC(sei.m_decodingUnitIdx, "decoding_unit_idx");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -516,7 +516,7 @@ void SEIWriter::xWriteSEIPictureTiming(const SEIPictureTiming& sei, const SEIBuf
 
 void SEIWriter::xWriteSEIFrameFieldInfo(const SEIFrameFieldInfo &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 1;
@@ -567,7 +567,7 @@ void SEIWriter::xWriteSEIDependentRAPIndication(const SEIDependentRAPIndication 
 void SEIWriter::xWriteSEIScalableNesting(OutputBitstream &bs, const SEIScalableNesting &sei, int SEIPrefixIndicationIdx)
 {
   CHECK (sei.m_nestedSEIs.size()<1, "There must be at lease one SEI message nested in the scalable nesting SEI.")
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 2;
@@ -576,7 +576,7 @@ void SEIWriter::xWriteSEIScalableNesting(OutputBitstream &bs, const SEIScalableN
 #endif
   WRITE_FLAG(sei.m_snOlsFlag, "sn_ols_flag");
   WRITE_FLAG(sei.m_snSubpicFlag, "sn_subpic_flag");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -634,7 +634,7 @@ void SEIWriter::xWriteSEIScalableNesting(OutputBitstream &bs, const SEIScalableN
 
 void SEIWriter::xWriteSEIFramePacking(const SEIFramePacking &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 0;
@@ -655,7 +655,7 @@ void SEIWriter::xWriteSEIFramePacking(const SEIFramePacking &sei, int SEIPrefixI
     WRITE_CODE( sei.m_arrangementType, 7,           "fp_arrangement_type" );
     WRITE_FLAG( sei.m_quincunxSamplingFlag,         "fp_quincunx_sampling_flag" );
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx)
       return;
 #endif
@@ -686,7 +686,7 @@ void SEIWriter::xWriteSEIFramePacking(const SEIFramePacking &sei, int SEIPrefixI
 
 void SEIWriter::xWriteSEIParameterSetsInclusionIndication(const SEIParameterSetsInclusionIndication &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 1;
@@ -698,7 +698,7 @@ void SEIWriter::xWriteSEIParameterSetsInclusionIndication(const SEIParameterSets
 
 void SEIWriter::xWriteSEIMasteringDisplayColourVolume(const SEIMasteringDisplayColourVolume& sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 6*16;
@@ -714,7 +714,7 @@ void SEIWriter::xWriteSEIMasteringDisplayColourVolume(const SEIMasteringDisplayC
 
   WRITE_CODE( sei.values.primaries[2][0],  16,  "mdcv_display_primaries_x[2]" );
   WRITE_CODE( sei.values.primaries[2][1],  16,  "mdcv_display_primaries_y[2]" );
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -734,7 +734,7 @@ void SEIWriter::xWriteSEIMasteringDisplayColourVolume(const SEIMasteringDisplayC
   WRITE_CODE( sei.values.minLuminance,     32,  "mdcv_min_display_mastering_luminance" );
 }
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
 void SEIWriter::xWriteSEIManifest(const SEIManifest &sei) 
 {
   WRITE_CODE(sei.m_manifestNumSeiMsgTypes, 16, "manifest_num_sei_msg_types");
@@ -746,7 +746,7 @@ void SEIWriter::xWriteSEIManifest(const SEIManifest &sei)
 }
 #endif   
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
 void SEIWriter::xWriteSEIPrefixIndication(OutputBitstream &bs, const SEIPrefixIndication &sei, HRD &hrd, const uint32_t temporalId)
 {
   
@@ -899,7 +899,7 @@ void SEIWriter::xWriteByteAlign()
 #if U0033_ALTERNATIVE_TRANSFER_CHARACTERISTICS_SEI
 void SEIWriter::xWriteSEIAlternativeTransferCharacteristics(const SEIAlternativeTransferCharacteristics& sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 8;
@@ -912,7 +912,7 @@ void SEIWriter::xWriteSEIAlternativeTransferCharacteristics(const SEIAlternative
 
 void SEIWriter::xWriteSEIEquirectangularProjection(const SEIEquirectangularProjection &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 5;
@@ -939,7 +939,7 @@ void SEIWriter::xWriteSEIEquirectangularProjection(const SEIEquirectangularProje
 
 void SEIWriter::xWriteSEISphereRotation(const SEISphereRotation &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     if (sei.m_sphereRotationCancelFlag) {
@@ -958,7 +958,7 @@ void SEIWriter::xWriteSEISphereRotation(const SEISphereRotation &sei, int SEIPre
   {
     WRITE_FLAG( sei.m_sphereRotationPersistenceFlag,    "sphere_rotation_persistence_flag" );
     WRITE_CODE( 0,                                   6, "sphere_rotation_reserved_zero_6bits" );
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -977,7 +977,7 @@ void SEIWriter::xWriteSEISphereRotation(const SEISphereRotation &sei, int SEIPre
 
 void SEIWriter::xWriteSEIOmniViewport(const SEIOmniViewport &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 10+1+1+4;
@@ -991,7 +991,7 @@ void SEIWriter::xWriteSEIOmniViewport(const SEIOmniViewport &sei, int SEIPrefixI
     WRITE_FLAG( sei.m_omniViewportPersistenceFlag, "omni_viewport_persistence_flag" );
     const uint32_t numRegions = (uint32_t) sei.m_omniViewportRegions.size();
     WRITE_CODE( numRegions - 1, 4,                 "omni_viewport_cnt_minus1" );
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -1011,7 +1011,7 @@ void SEIWriter::xWriteSEIOmniViewport(const SEIOmniViewport &sei, int SEIPrefixI
 
 void SEIWriter::xWriteSEIRegionWisePacking(const SEIRegionWisePacking &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     if (sei.m_rwpCancelFlag) {
@@ -1038,7 +1038,7 @@ void SEIWriter::xWriteSEIRegionWisePacking(const SEIRegionWisePacking &sei, int 
     WRITE_CODE( (uint32_t)sei.m_projPictureHeight,                32,        "rwp_proj_picture_height" );
     WRITE_CODE( (uint32_t)sei.m_packedPictureWidth,               16,        "rwp_packed_picture_width" );
     WRITE_CODE( (uint32_t)sei.m_packedPictureHeight,              16,        "rwp_packed_picture_height" );
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -1046,7 +1046,7 @@ void SEIWriter::xWriteSEIRegionWisePacking(const SEIRegionWisePacking &sei, int 
 #endif
     for( int i=0; i < sei.m_numPackedRegions; i++ )
     {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
       if (SEIPrefixIndicationIdx >= 2)
       {
         int numBits = 200;
@@ -1079,7 +1079,7 @@ void SEIWriter::xWriteSEIRegionWisePacking(const SEIRegionWisePacking &sei, int 
         }
         WRITE_CODE( 0, 3,                                                    "rwp_guard_band_reserved_zero_3bits" );
       }
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
       if (SEIPrefixIndicationIdx >= 2)
       {
         xWriteSPIByteAlign();
@@ -1093,7 +1093,7 @@ void SEIWriter::xWriteSEIRegionWisePacking(const SEIRegionWisePacking &sei, int 
 void SEIWriter::xWriteSEIGeneralizedCubemapProjection(const SEIGeneralizedCubemapProjection &sei,
                                                       int                                    SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 1;
@@ -1108,7 +1108,7 @@ void SEIWriter::xWriteSEIGeneralizedCubemapProjection(const SEIGeneralizedCubema
     WRITE_FLAG( sei.m_gcmpPersistenceFlag,                    "gcmp_persistence_flag" );
     WRITE_CODE( sei.m_gcmpPackingType,                     3, "gcmp_packing_type" );
     WRITE_CODE( sei.m_gcmpMappingFunctionType,             2, "gcmp_mapping_function_type" );
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -1145,7 +1145,7 @@ void SEIWriter::xWriteSEISubpictureLevelInfo(const SEISubpicureLevelInfo &sei, i
   {
     CHECK(sei.m_numRefLevels != (int)sei.m_refLevelFraction.size(), "SEISubpicureLevelInfo: numRefLevels must be equal to the number of fractions");
   }
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 5;
@@ -1155,7 +1155,7 @@ void SEIWriter::xWriteSEISubpictureLevelInfo(const SEISubpicureLevelInfo &sei, i
   WRITE_CODE( (uint32_t)sei.m_numRefLevels - 1, 3,                            "sli_num_ref_levels_minus1");
   WRITE_FLAG(           sei.m_cbrConstraintFlag,                              "sli_cbr_constraint_flag");
   WRITE_FLAG(           sei.m_explicitFractionPresentFlag,                    "sli_explicit_fraction_present_flag");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -1192,7 +1192,7 @@ void SEIWriter::xWriteSEISubpictureLevelInfo(const SEISubpicureLevelInfo &sei, i
 
 void SEIWriter::xWriteSEISampleAspectRatioInfo(const SEISampleAspectRatioInfo &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 1;
@@ -1206,7 +1206,7 @@ void SEIWriter::xWriteSEISampleAspectRatioInfo(const SEISampleAspectRatioInfo &s
   {
     WRITE_FLAG( sei.m_sariPersistenceFlag,                                    "sari_persistence_flag" );
     WRITE_CODE( (uint32_t)sei.m_sariAspectRatioIdc, 8,                        "sari_aspect_ratio_idc");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -1222,7 +1222,7 @@ void SEIWriter::xWriteSEISampleAspectRatioInfo(const SEISampleAspectRatioInfo &s
 
 void SEIWriter::xWriteSEIUserDataRegistered(const SEIUserDataRegistered &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 8;
@@ -1237,7 +1237,7 @@ void SEIWriter::xWriteSEIUserDataRegistered(const SEIUserDataRegistered &sei, in
     assert(sei.m_ituCountryCode < 255 + 256);
     WRITE_CODE(sei.m_ituCountryCode - 255, 8, "itu_t_t35_country_code_extension_byte");
   }
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -1257,7 +1257,7 @@ void SEIWriter::xWriteSEIUserDataRegistered(const SEIUserDataRegistered &sei, in
 
 void SEIWriter::xWriteSEIFilmGrainCharacteristics(const SEIFilmGrainCharacteristics &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 1;
@@ -1271,7 +1271,7 @@ void SEIWriter::xWriteSEIFilmGrainCharacteristics(const SEIFilmGrainCharacterist
   {
     WRITE_CODE(sei.m_filmGrainModelId, 2,                     "fg_model_id");
     WRITE_FLAG(sei.m_separateColourDescriptionPresentFlag,    "fg_separate_colour_description_present_flag");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;
@@ -1325,7 +1325,7 @@ void SEIWriter::xWriteSEIFilmGrainCharacteristics(const SEIFilmGrainCharacterist
 
 void SEIWriter::xWriteSEIContentLightLevelInfo(const SEIContentLightLevelInfo &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 32;
@@ -1338,7 +1338,7 @@ void SEIWriter::xWriteSEIContentLightLevelInfo(const SEIContentLightLevelInfo &s
 
 void SEIWriter::xWriteSEIAmbientViewingEnvironment(const SEIAmbientViewingEnvironment &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 32;
@@ -1346,7 +1346,7 @@ void SEIWriter::xWriteSEIAmbientViewingEnvironment(const SEIAmbientViewingEnviro
   }
 #endif
   WRITE_CODE(sei.m_ambientIlluminance, 32, "ambient_illuminance" );
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx == 1)
   {
     return;
@@ -1364,7 +1364,7 @@ void SEIWriter::xWriteSEIAmbientViewingEnvironment(const SEIAmbientViewingEnviro
 
 void SEIWriter::xWriteSEIContentColourVolume(const SEIContentColourVolume &sei, int SEIPrefixIndicationIdx)
 {
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   if (SEIPrefixIndicationIdx)
   {
     int numBits = 1;
@@ -1381,7 +1381,7 @@ void SEIWriter::xWriteSEIContentColourVolume(const SEIContentColourVolume &sei, 
     WRITE_FLAG(sei.m_ccvMinLuminanceValuePresentFlag, "ccv_min_luminance_value_present_flag");
     WRITE_FLAG(sei.m_ccvMaxLuminanceValuePresentFlag, "ccv_max_luminance_value_present_flag");
     WRITE_FLAG(sei.m_ccvAvgLuminanceValuePresentFlag, "ccv_avg_luminance_value_present_flag");
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
     if (SEIPrefixIndicationIdx == 1)
     {
       return;

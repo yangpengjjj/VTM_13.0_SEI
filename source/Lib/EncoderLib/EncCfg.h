@@ -792,11 +792,11 @@ protected:
   int         m_numRefLayers[MAX_VPS_LAYERS];
   bool        m_avoidIntraInDepLayer;
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
   bool                        m_smSeiManifestSeiEnabled;
 
 #endif
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   bool                                   m_spiSeiPrefixIndicationSeiEnabled;
 
 #endif
@@ -2063,13 +2063,13 @@ public:
   const CfgVPSParameters& getVPSParameters() const                                  { return m_cfgVPSParameters; }
   void                    setVPSParameters(const CfgVPSParameters& cfg)             { m_cfgVPSParameters = cfg; }
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
   void setSmSEIManifestSeiEnabled(bool b) { m_smSeiManifestSeiEnabled = b; }
   bool getSmSeiManifestSeiEnabled() { return m_smSeiManifestSeiEnabled; }
 
 #endif
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   void setSpiPrefixIndicationSeiEnabled(bool b) { m_spiSeiPrefixIndicationSeiEnabled = b; }
   bool getSpiPrefixIndicationSeiEnabled() { return m_spiSeiPrefixIndicationSeiEnabled; }
 

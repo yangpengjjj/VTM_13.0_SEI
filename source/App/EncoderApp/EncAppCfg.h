@@ -788,10 +788,10 @@ protected:
   bool        m_calculateHdrMetrics;
 #endif
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
   bool                        m_smSeiManifestSeiEnabled;
 #endif
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
   bool                        m_spiSeiPrefixIndicationSeiEnabled;
 #endif   
 

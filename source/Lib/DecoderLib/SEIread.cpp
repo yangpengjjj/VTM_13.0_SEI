@@ -301,13 +301,13 @@ void SEIReader::xReadSEImessage(SEIMessages& seis, const NalUnitType nalUnitType
       sei = new SEIContentColourVolume;
       xParseSEIContentColourVolume((SEIContentColourVolume&)*sei, payloadSize, pDecodedMessageOutputStream);
       break;
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
       case SEI::SEI_MANIFEST : 
        sei = new SEIManifest;
        xParseSEISeiManifest((SEIManifest &) *sei, payloadSize, pDecodedMessageOutputStream);
        break;
 #endif
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
       case SEI::SEI_PREFIX_INDICATION : 
        sei = new SEIPrefixIndication;
        xParseSEISeiPrefixIndication((SEIPrefixIndication &) *sei, payloadSize, pDecodedMessageOutputStream);
@@ -1795,7 +1795,7 @@ void SeiCfgFileDump::xDumpSEIGeneralizedCubemapProjection  (SEIGeneralizedCubema
 
 #endif
 
-#if SEI_MANIFEST_APP1
+#if JVET_T0056_SEI_MANIFEST
  void SEIReader::xParseSEISeiManifest(SEIManifest &sei, unsigned int payloadSize, std::ostream *pDecodedMessageOutputStream)
 {
   output_sei_message_header(sei, pDecodedMessageOutputStream, payloadSize);
@@ -1817,7 +1817,7 @@ void SeiCfgFileDump::xDumpSEIGeneralizedCubemapProjection  (SEIGeneralizedCubema
 }
 #endif
 
-#if SEI_PREFIX_APP1
+#if JVET_T0056_SEI_PREFIX_INDICATION
  void SEIReader::xParseSEISeiPrefixIndication(SEIPrefixIndication &sei, unsigned int payloadSize, std::ostream *pDecodedMessageOutputStream)
 {
   output_sei_message_header(sei, pDecodedMessageOutputStream, payloadSize);
